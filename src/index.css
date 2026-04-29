@@ -1,0 +1,264 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --navy: 26 60 110;
+  --gold: 201 149 42;
+}
+
+* {
+  @apply border-slate-200;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased;
+  margin: 0;
+  font-family: "Open Sans", system-ui, sans-serif;
+  min-height: 100vh;
+  background: #1a3c6e;
+  color: #ffffff;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.contact-input {
+  @apply min-h-12 w-full rounded-lg px-4 text-sm outline-none transition focus:ring-2;
+  border: 1px solid rgb(201 149 42 / 0.32);
+  background: rgb(255 255 255 / 0.08);
+  color: #ffffff;
+}
+
+.contact-input::placeholder {
+  color: rgb(255 255 255 / 0.64);
+}
+
+.contact-input:focus {
+  border-color: #c9952a;
+  --tw-ring-color: rgb(201 149 42 / 0.25);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300;
+}
+
+.brand-navy {
+  background: #1a3c6e;
+}
+
+.brand-navy-alt {
+  background: #143963;
+}
+
+.brand-gold {
+  color: #c9952a !important;
+}
+
+.brand-white {
+  color: #ffffff !important;
+}
+
+.brand-muted {
+  color: rgb(255 255 255 / 0.78) !important;
+}
+
+.brand-subtle {
+  color: rgb(255 255 255 / 0.62) !important;
+}
+
+.brand-panel {
+  background: rgb(255 255 255 / 0.065);
+  border: 1px solid rgb(201 149 42 / 0.28);
+  color: #ffffff;
+}
+
+.brand-panel-strong {
+  background: rgb(8 32 61 / 0.56);
+  border: 1px solid rgb(201 149 42 / 0.34);
+  color: #ffffff;
+}
+
+.gold-button {
+  display: inline-flex;
+  min-height: 2.9rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #c9952a;
+  padding: 0.75rem 1.35rem;
+  color: #c9952a !important;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.gold-button:hover {
+  background: #c9952a;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.ghost-button {
+  display: inline-flex;
+  min-height: 2.9rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.34);
+  padding: 0.75rem 1.35rem;
+  color: #ffffff !important;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.ghost-button:hover {
+  background: rgb(255 255 255 / 0.1);
+  border-color: #ffffff;
+}
+
+.phase-letter {
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(201 149 42 / 0.32);
+  background: rgb(255 255 255 / 0.06);
+  color: #c9952a;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.phase-letter:hover,
+.phase-letter-active {
+  background: #c9952a;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.phase-tab {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(201 149 42 / 0.25);
+  background: rgb(255 255 255 / 0.045);
+  padding: 0.75rem;
+  text-align: left;
+  color: rgb(255 255 255 / 0.78);
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.phase-tab span {
+  display: grid;
+  height: 2.4rem;
+  width: 2.4rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 0.45rem;
+  background: rgb(201 149 42 / 0.14);
+  color: #c9952a;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-weight: 800;
+}
+
+.phase-tab strong {
+  display: none;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 1024px) {
+  .phase-tab strong {
+    display: block;
+  }
+}
+
+.phase-tab:hover,
+.phase-tab-active {
+  border-color: #c9952a;
+  background: rgb(201 149 42 / 0.13);
+  color: #ffffff;
+}
+
+.sector-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgb(201 149 42 / 0.42);
+  padding: 0.7rem 1rem;
+  color: #ffffff !important;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.sector-pill:hover {
+  background: #c9952a;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.rich-editor:empty::before {
+  content: "Write the full article here...";
+  color: rgb(255 255 255 / 0.45);
+}
+
+.rich-editor h2,
+.rich-content h2 {
+  color: #ffffff;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 1rem 0 0.5rem;
+}
+
+.rich-editor p,
+.rich-content p {
+  margin: 0.75rem 0;
+}
+
+.rich-editor ul,
+.rich-editor ol,
+.rich-content ul,
+.rich-content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+}
+
+.rich-editor ul,
+.rich-content ul {
+  list-style: disc;
+}
+
+.rich-editor ol,
+.rich-content ol {
+  list-style: decimal;
+}
+
+.rich-editor li,
+.rich-content li {
+  margin: 0.35rem 0;
+}
