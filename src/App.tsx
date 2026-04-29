@@ -1,11 +1,12 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
-import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   Award,
   BadgeCheck,
   BarChart3,
+  Bold,
   BriefcaseBusiness,
   Building2,
   CalendarDays,
@@ -19,11 +20,16 @@ import {
   FileCheck2,
   Globe2,
   Handshake,
+  Heading2,
   Instagram,
+  Italic,
   Layers3,
   Lightbulb,
+  Link2,
   LineChart,
   Linkedin,
+  List,
+  ListOrdered,
   Mail,
   Menu,
   MessageCircle,
@@ -32,12 +38,16 @@ import {
   Plus,
   Quote,
   RefreshCw,
+  Redo2,
   Save,
   ShieldCheck,
   Star,
   Target,
   Trophy,
   Trash2,
+  Type,
+  Underline,
+  Undo2,
   Users,
   X,
 } from "lucide-react";
@@ -432,6 +442,37 @@ function saveLocalArticles(articles: InsightArticle[]) {
   window.localStorage.setItem(localArticlesKey, JSON.stringify(articles));
 }
 
+function usePublishedInsights() {
+  const [articles, setArticles] = useState<InsightArticle[]>(defaultArticles);
+
+  useEffect(() => {
+    async function loadArticles() {
+      if (!supabase) {
+        setArticles(readLocalArticles().filter((article) => article.status === "published"));
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("insights_articles")
+        .select("id,title,slug,category,read_time,published_at,excerpt,body,author,status,featured,created_at")
+        .eq("status", "published")
+        .order("featured", { ascending: false })
+        .order("published_at", { ascending: false });
+
+      if (error || !data?.length) {
+        setArticles(defaultArticles);
+        return;
+      }
+
+      setArticles(data.map(normalizeArticle));
+    }
+
+    loadArticles();
+  }, []);
+
+  return articles;
+}
+
 function Logo() {
   return (
     <Link className="block" to="/" aria-label="Transcend Consultancy home">
@@ -594,6 +635,8 @@ function RichTextEditor({
   onChange: (value: string) => void;
 }) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const plainText = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  const wordCount = plainText ? plainText.split(" ").length : 0;
 
   useEffect(() => {
     const editor = editorRef.current;
@@ -607,48 +650,85 @@ function RichTextEditor({
     onChange(editorRef.current?.innerHTML ?? "");
   }
 
+  function insertLink() {
+    const url = window.prompt("Enter the URL");
+    if (!url) return;
+    runCommand("createLink", url);
+  }
+
+  const toolbarGroups: Array<Array<{ label: string; command: string; icon: LucideIcon; value?: string }>> = [
+    [
+      { label: "Paragraph", command: "formatBlock", icon: Type, value: "p" },
+      { label: "Heading", command: "formatBlock", icon: Heading2, value: "h2" },
+      { label: "Quote", command: "formatBlock", icon: Quote, value: "blockquote" },
+    ],
+    [
+      { label: "Bold", command: "bold", icon: Bold },
+      { label: "Italic", command: "italic", icon: Italic },
+      { label: "Underline", command: "underline", icon: Underline },
+    ],
+    [
+      { label: "Bulleted list", command: "insertUnorderedList", icon: List },
+      { label: "Numbered list", command: "insertOrderedList", icon: ListOrdered },
+    ],
+    [
+      { label: "Undo", command: "undo", icon: Undo2 },
+      { label: "Redo", command: "redo", icon: Redo2 },
+    ],
+  ];
+
   return (
-    <div className="mt-2 overflow-hidden rounded-lg border border-gold/30 bg-white/[0.04]">
-      <div className="flex flex-wrap gap-2 border-b border-white/10 bg-[#09233F] p-3">
-        {[
-          ["Bold", "bold"],
-          ["Italic", "italic"],
-          ["Underline", "underline"],
-          ["Bullets", "insertUnorderedList"],
-          ["Numbers", "insertOrderedList"],
-        ].map(([label, command]) => (
-          <button
-            className="rounded-md border border-white/15 px-3 py-1.5 text-xs font-bold text-white/75 hover:bg-white/10"
-            key={command}
-            onClick={() => runCommand(command)}
-            type="button"
-          >
-            {label}
-          </button>
-        ))}
-        <button
-          className="rounded-md border border-white/15 px-3 py-1.5 text-xs font-bold text-white/75 hover:bg-white/10"
-          onClick={() => runCommand("formatBlock", "h2")}
-          type="button"
-        >
-          Heading
-        </button>
-        <button
-          className="rounded-md border border-white/15 px-3 py-1.5 text-xs font-bold text-white/75 hover:bg-white/10"
-          onClick={() => runCommand("formatBlock", "p")}
-          type="button"
-        >
-          Paragraph
-        </button>
+    <div className="mt-2 overflow-hidden rounded-2xl border border-white/15 bg-[#071C35] shadow-inner shadow-black/20">
+      <div className="border-b border-white/10 bg-[#F8FAFC] px-3 py-2 text-[#1F2937]">
+        <div className="flex flex-wrap items-center gap-2">
+          {toolbarGroups.map((group, groupIndex) => (
+            <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm" key={groupIndex}>
+              {group.map(({ label, command, icon: Icon, value: commandValue }) => (
+                <button
+                  aria-label={label}
+                  className="grid h-8 min-w-8 place-items-center rounded-md px-2 text-slate-700 transition hover:bg-slate-100"
+                  key={label}
+                  onClick={() => runCommand(command, commandValue)}
+                  title={label}
+                  type="button"
+                >
+                  <Icon size={16} />
+                </button>
+              ))}
+            </div>
+          ))}
+          <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+            <button
+              aria-label="Insert link"
+              className="grid h-8 min-w-8 place-items-center rounded-md px-2 text-slate-700 transition hover:bg-slate-100"
+              onClick={insertLink}
+              title="Insert link"
+              type="button"
+            >
+              <Link2 size={16} />
+            </button>
+            <button
+              className="h-8 rounded-md px-3 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
+              onClick={() => runCommand("removeFormat")}
+              type="button"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </div>
       <div
-        className="rich-editor min-h-[300px] px-4 py-4 text-sm leading-7 text-white/86 outline-none"
+        className="rich-editor min-h-[360px] bg-white px-6 py-5 text-[15px] leading-8 text-slate-800 outline-none"
         contentEditable
         onInput={(event) => onChange(event.currentTarget.innerHTML)}
         ref={editorRef}
         role="textbox"
         suppressContentEditableWarning
       />
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-[#F8FAFC] px-4 py-2 text-xs font-semibold text-slate-500">
+        <span>Rich text editor</span>
+        <span>{wordCount} words</span>
+      </div>
     </div>
   );
 }
@@ -861,7 +941,7 @@ function AboutPage() {
             <h3 className="brand-white mt-5 font-heading text-2xl font-bold">MBA · Postgraduate Institute of Management</h3>
             <p className="brand-muted mt-4 leading-7">University of Sri Jayewardenepura, Sri Lanka</p>
             <div className="mt-8 grid gap-4">
-              {["25+ years frontline commercial leadership", "AED 25M+ enterprise deal experience", "UAE technology and transformation expertise"].map((item) => (
+              {["25+ years frontline commercial leadership", "Enterprise deal experience", "UAE technology and transformation expertise"].map((item) => (
                 <div className="brand-white flex gap-3" key={item}>
                   <BadgeCheck className="brand-gold shrink-0" size={20} />
                   <span>{item}</span>
@@ -1115,7 +1195,7 @@ function ElevatePage() {
           ))}
         </div>
         <div className="mx-auto mt-10 grid max-w-7xl gap-5 md:grid-cols-3">
-          <IconStat icon={FileCheck2} title="Month 1-2" copy="Diagnosis complete, full capability gap report delivered, and training content customized." />
+          <IconStat icon={FileCheck2} title="Month 1-2" copy="Diagnosis complete, full capability gap report delivered, and coaching content customized." />
           <IconStat icon={LineChart} title="Month 3-4" copy="First measurable shifts in pipeline quality, conversation depth, and conversion rates." />
           <IconStat icon={Trophy} title="Month 6" copy="20-35% improvement in agreed metrics, certified internal coaches, and self-sustaining culture." />
         </div>
@@ -1187,120 +1267,114 @@ function VerticalsPage() {
 }
 
 function InsightsPage() {
-  const [articles, setArticles] = useState<InsightArticle[]>(defaultArticles);
-
-  useEffect(() => {
-    async function loadArticles() {
-      if (!supabase) {
-        setArticles(readLocalArticles());
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("insights_articles")
-        .select("id,title,slug,category,read_time,published_at,excerpt,body,author,status,featured,created_at")
-        .eq("status", "published")
-        .order("featured", { ascending: false })
-        .order("published_at", { ascending: false });
-
-      if (error || !data?.length) {
-        setArticles(defaultArticles);
-        return;
-      }
-
-      setArticles(data.map(normalizeArticle));
-    }
-
-    loadArticles();
-  }, []);
-
-  const publishedArticles = articles.filter((article) => article.status === "published");
-  const featuredArticle = publishedArticles.find((article) => article.featured) ?? publishedArticles[0] ?? defaultArticles[0];
-  const latestArticles = publishedArticles.filter((article) => article.id !== featuredArticle.id);
+  const articles = usePublishedInsights();
+  const featuredArticle = articles.find((article) => article.featured) ?? articles[0] ?? defaultArticles[0];
+  const otherArticles = articles.filter((article) => article.id !== featuredArticle.id);
 
   return (
     <>
       <PageHero
-        eyebrow="The Performance Edge"
+        eyebrow="Insights"
         title={
           <>
-            Insights for leaders building <Gold>high-performing organizations.</Gold>
+            Ideas for building <Gold>high-performing organizations.</Gold>
           </>
         }
-        body="Frameworks, field notes, and evidence-based perspectives from 25+ years of closing deals, building teams, and transforming commercial cultures across the UAE and MEA region."
+        body="Explore practical perspectives on performance, leadership, customer experience, people systems, and sustainable growth."
         image={heroImages.insights}
       />
       <section className="brand-navy px-5 py-20 lg:px-8">
-        <div className="mx-auto mb-8 max-w-7xl">
-          <div>
-            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Latest Thinking</p>
-            <h2 className="brand-white mt-3 font-heading text-3xl font-bold md:text-4xl">
-              Fresh perspectives on performance, leadership, and growth.
-            </h2>
-          </div>
-        </div>
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.1fr_.9fr]">
-          <Panel className="p-8" strong>
-            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.26em]">Featured Article</p>
-            <h2 className="brand-white mt-4 font-heading text-4xl font-bold leading-tight">{featuredArticle.title}</h2>
-            <p className="brand-gold mt-4 text-sm font-semibold">{articleMeta(featuredArticle)}</p>
-            <p className="brand-muted mt-5 leading-8">{featuredArticle.excerpt}</p>
-            {featuredArticle.body && (
-              <div
-                className="rich-content brand-muted mt-4 text-sm leading-7"
-                dangerouslySetInnerHTML={{ __html: featuredArticle.body }}
-              />
-            )}
-            <a className="brand-gold mt-7 inline-flex items-center gap-2 font-heading text-sm font-bold" href="#">
-              Read the Article <ArrowRight size={18} />
-            </a>
-          </Panel>
-          <div className="grid gap-5">
-            {latestArticles.map((article) => (
-              <Panel className="p-6" key={article.title}>
-                <p className="brand-gold text-xs font-semibold">{articleMeta(article)}</p>
-                <h3 className="brand-white mt-2 font-heading text-xl font-bold">{article.title}</h3>
-                <p className="brand-muted mt-3 text-sm leading-6">{article.excerpt}</p>
-              </Panel>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className="brand-navy-alt px-5 py-20 lg:px-8">
-        <SectionHeader eyebrow="Quick-read Frameworks" title={<>Tools you can use <Gold>today.</Gold></>} body="Condensed frameworks distilled from frontline commercial experience. Read in 2 minutes. Apply in your next sales meeting." />
-        <div className="mx-auto mt-12 grid max-w-7xl gap-5 lg:grid-cols-2">
-          <Panel className="p-7">
-            <h3 className="brand-white font-heading text-2xl font-bold">The SPIN question sequence</h3>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {[
-                ["Situation", "Establish context: what does the buyer's current reality look like?"],
-                ["Problem", "Surface the pain: what difficulties or dissatisfactions exist?"],
-                ["Implication", "Expand the cost: what happens if this problem goes unsolved?"],
-                ["Need-payoff", "Let them voice the value: what would solving this be worth?"],
-              ].map(([title, copy]) => (
-                <div className="rounded-lg border border-gold/20 p-4" key={title}>
-                  <h4 className="brand-gold font-heading font-bold">{title}</h4>
-                  <p className="brand-muted mt-2 text-sm leading-6">{copy}</p>
-                </div>
+        <div className="mx-auto max-w-7xl">
+          <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Featured Insight</p>
+          <Link className="mt-6 grid overflow-hidden rounded-2xl border border-gold/25 bg-[#0D2B4D] transition hover:-translate-y-1 hover:border-gold/50 lg:grid-cols-[.85fr_1.15fr]" to={`/insights/${featuredArticle.slug}`}>
+            <div className="min-h-[320px] bg-cover bg-center" style={{ backgroundImage: `url(${heroImages.insights})` }} />
+            <div className="p-7 md:p-9">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-bold text-[#C9952A]">{featuredArticle.category}</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/72">{featuredArticle.readTime}</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/72">{formatArticleDate(featuredArticle.publishedAt)}</span>
+              </div>
+              <h2 className="brand-white mt-5 font-heading text-3xl font-bold leading-tight md:text-4xl">{featuredArticle.title}</h2>
+              <p className="brand-muted mt-5 leading-7">{featuredArticle.excerpt}</p>
+              <p className="brand-gold mt-7 inline-flex items-center gap-2 font-heading text-sm font-bold">
+                Read Article <ArrowRight size={18} />
+              </p>
+            </div>
+          </Link>
+
+          <div className="mt-14">
+            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">All Insights</p>
+            <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {otherArticles.map((article) => (
+                <Link className="group rounded-2xl border border-white/10 bg-white/[0.055] p-6 transition hover:-translate-y-1 hover:border-gold/40 hover:bg-white/[0.075]" key={article.id} to={`/insights/${article.slug}`}>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-bold text-[#C9952A]">{article.category}</span>
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/62">{article.readTime}</span>
+                  </div>
+                  <h3 className="brand-white mt-5 font-heading text-xl font-bold leading-snug">{article.title}</h3>
+                  <p className="brand-muted mt-4 text-sm leading-6">{article.excerpt}</p>
+                  <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-4">
+                    <span className="text-xs font-semibold text-white/45">{formatArticleDate(article.publishedAt)}</span>
+                    <span className="brand-gold inline-flex items-center gap-1 font-heading text-sm font-bold">
+                      Read <ArrowRight size={16} />
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
-          </Panel>
-          <Panel className="p-7">
-            <h3 className="brand-white font-heading text-2xl font-bold">The 5-question pipeline audit</h3>
-            <BulletList
-              items={[
-                "Does the buyer have a problem we can solve, confirmed in their words?",
-                "Has a decision been made to fix it, or are they still exploring?",
-                "Do we know who makes the final decision?",
-                "Is there budget allocated, or are we building a business case?",
-                "What is the cost of inaction, and does the buyer feel it?",
-              ]}
-            />
-          </Panel>
+          </div>
         </div>
       </section>
-      <Newsletter />
     </>
+  );
+}
+
+function InsightDetailPage() {
+  const { slug } = useParams();
+  const articles = usePublishedInsights();
+  const featuredArticle = articles.find((article) => article.slug === slug) ?? articles.find((article) => article.featured) ?? articles[0] ?? defaultArticles[0];
+
+  return (
+    <article className="brand-navy">
+      <div
+        className="h-[300px] bg-cover bg-center md:h-[380px]"
+        style={{
+          backgroundImage: `linear-gradient(90deg, rgba(7, 28, 53, .2), rgba(7, 28, 53, .1)), url(${heroImages.insights})`,
+        }}
+      />
+      <section className="px-5 py-14 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-8 flex flex-wrap items-center gap-2 text-sm text-white/62">
+            <Link className="hover:text-white" to="/">
+              Home
+            </Link>
+            <span>/</span>
+            <span>Insights</span>
+            <span>/</span>
+            <span className="text-white/82">{featuredArticle.title}</span>
+          </div>
+
+          <h1 className="brand-white font-heading text-4xl font-bold leading-tight md:text-5xl">
+            {featuredArticle.title}
+          </h1>
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/62">
+            <span>{featuredArticle.category}</span>
+            <span>{featuredArticle.readTime}</span>
+            <span>{formatArticleDate(featuredArticle.publishedAt)}</span>
+          </div>
+          <p className="mt-4 text-sm text-white/62">Posted by {featuredArticle.author}</p>
+
+          <p className="brand-muted mt-10 text-lg leading-8">{featuredArticle.excerpt}</p>
+
+          {featuredArticle.body && (
+            <div
+              className="rich-content article-content mt-10 text-base leading-8 text-white/78"
+              dangerouslySetInnerHTML={{ __html: featuredArticle.body }}
+            />
+          )}
+        </div>
+      </section>
+    </article>
   );
 }
 
@@ -1694,7 +1768,7 @@ function InsightsDashboardPage() {
                   <label className="text-sm font-bold text-white/80">
                     Publication status
                     <select
-                      className="contact-input mt-2"
+                      className="dashboard-select mt-2"
                       onChange={(event) => setFormState({ ...formState, status: event.target.value as "draft" | "published", featured: event.target.value === "published" ? formState.featured : false })}
                       value={formState.status}
                     >
@@ -1734,6 +1808,16 @@ function InsightsDashboardPage() {
                   <h3 className="mt-3 font-heading text-2xl font-bold leading-tight">{formState.title || "Article title preview"}</h3>
                   <p className="mt-4 text-sm leading-6 text-white/70">{formState.excerpt || "Your article summary will appear here."}</p>
                   <p className="mt-5 text-xs font-semibold text-white/45">Author: {formState.author}</p>
+                  <div className="mt-5 max-h-[360px] overflow-y-auto rounded-xl border border-white/10 bg-white p-4">
+                    {formState.body ? (
+                      <div
+                        className="rich-content rich-content-light text-sm leading-7 text-slate-800"
+                        dangerouslySetInnerHTML={{ __html: formState.body }}
+                      />
+                    ) : (
+                      <p className="text-sm leading-7 text-slate-400">Article body preview will appear here as you write.</p>
+                    )}
+                  </div>
                 </div>
                 {featuredArticle && (
                   <p className="mt-4 text-sm leading-6 text-white/60">
@@ -2137,6 +2221,7 @@ export function App() {
           <Route path="/verticals" element={<VerticalsPage />} />
           <Route path="/industries" element={<VerticalsPage />} />
           <Route path="/insights" element={<InsightsPage />} />
+          <Route path="/insights/:slug" element={<InsightDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard/insights" element={<ProtectedDashboard><InsightsDashboardPage /></ProtectedDashboard>} />
           <Route path="/contact" element={<ContactPage />} />

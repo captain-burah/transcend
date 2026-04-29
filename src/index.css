@@ -47,6 +47,38 @@ body {
   --tw-ring-color: rgb(201 149 42 / 0.25);
 }
 
+.dashboard-select {
+  min-height: 3rem;
+  width: 100%;
+  appearance: none;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(201 149 42 / 0.32);
+  background-color: rgb(255 255 255 / 0.08);
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgb(201 149 42) 50%),
+    linear-gradient(135deg, rgb(201 149 42) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 12px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  color: #ffffff;
+  font-size: 0.875rem;
+  outline: none;
+  padding: 0 2.75rem 0 1rem;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.dashboard-select:focus {
+  border-color: #c9952a;
+  box-shadow: 0 0 0 2px rgb(201 149 42 / 0.22);
+}
+
+.dashboard-select option {
+  background: #09233f;
+  color: #ffffff;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -222,10 +254,18 @@ body {
 
 .rich-editor:empty::before {
   content: "Write the full article here...";
-  color: rgb(255 255 255 / 0.45);
+  color: rgb(71 85 105 / 0.55);
 }
 
-.rich-editor h2,
+.rich-editor h2 {
+  color: #0f172a;
+  font-family: "Montserrat", system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 1rem 0 0.5rem;
+}
+
 .rich-content h2 {
   color: #ffffff;
   font-family: "Montserrat", system-ui, sans-serif;
@@ -235,9 +275,28 @@ body {
   margin: 1rem 0 0.5rem;
 }
 
+.rich-content-light h2 {
+  color: #0f172a;
+}
+
 .rich-editor p,
 .rich-content p {
   margin: 0.75rem 0;
+}
+
+.rich-editor blockquote,
+.rich-content blockquote {
+  border-left: 3px solid #c9952a;
+  font-style: italic;
+  margin: 1rem 0;
+  padding-left: 1rem;
+}
+
+.rich-editor a,
+.rich-content a {
+  color: #c9952a;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 .rich-editor ul,
@@ -261,4 +320,41 @@ body {
 .rich-editor li,
 .rich-content li {
   margin: 0.35rem 0;
+}
+
+.article-content {
+  font-family: "Open Sans", system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+.article-content,
+.article-content * {
+  font-family: "Open Sans", system-ui, sans-serif !important;
+  color: rgb(255 255 255 / 0.82) !important;
+}
+
+.article-content h2 {
+  color: #ffffff !important;
+  font-size: 1.65rem;
+  margin-top: 1.8rem;
+}
+
+.article-content strong,
+.article-content b {
+  color: #ffffff !important;
+}
+
+.article-content p {
+  margin: 1rem 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
 }
