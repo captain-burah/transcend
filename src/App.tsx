@@ -1684,7 +1684,7 @@ function InsightsDashboardPage() {
     const normalizedUsers = (data ?? []).map(normalizeDashboardUser);
     setDashboardUsers(normalizedUsers);
     const currentProfile = normalizedUsers.find((user) => user.userId === userData.user?.id || user.email.toLowerCase() === currentEmail.toLowerCase());
-    setCurrentUserRole(currentProfile?.role ?? "viewer");
+    setCurrentUserRole(currentProfile?.role ?? (normalizedUsers.length === 0 ? "admin" : "viewer"));
     if (showStatus) setStatus("Dashboard users refreshed.");
   }
 
@@ -2107,7 +2107,7 @@ function InsightsDashboardPage() {
                     </div>
                   ))}
                 </div>
-                <button className="rounded-2xl border border-white/15 bg-white/[0.06] p-4 text-white/75 hover:bg-white/10" onClick={() => loadArticles(true)} type="button" aria-label="Refresh articles">
+                <button className="rounded-2xl border border-white/15 bg-white/[0.06] p-4 text-white/75 hover:bg-white/10" onClick={() => activeWorkspace === "users" ? loadDashboardUsers(true) : loadArticles(true)} type="button" aria-label="Refresh dashboard">
                   <RefreshCw size={20} />
                 </button>
               </div>
@@ -2678,6 +2678,7 @@ function ProtectedDashboard({ children }: { children: ReactNode }) {
 
     async function checkSession() {
       if (!supabase) {
+        setAuthenticated(true);
         setReady(true);
         return;
       }
