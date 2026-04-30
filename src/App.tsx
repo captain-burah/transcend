@@ -2536,7 +2536,7 @@ function ContactPage() {
               {[
                 [Mail, "hello@transcendhq.com"],
                 [Phone, "+971 50 625 0843"],
-                [MessageCircle, "Phone & WhatsApp"],
+                [MessageCircle, "WhatsApp"],
                 [Globe2, "www.transcendhq.com"],
                 [Linkedin, "/company/transcendhq"],
                 [Instagram, "@transcendhq"],
