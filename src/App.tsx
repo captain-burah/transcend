@@ -2038,11 +2038,18 @@ function LoginPage() {
 
     setLoading(true);
     setStatus("Signing in...");
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password: password.trim(),
+    });
     setLoading(false);
 
     if (error) {
-      setStatus(error.message);
+      setStatus(
+        error.message === "Invalid login credentials"
+          ? "Invalid login credentials. Confirm this email exists in Supabase Auth for the production project and that the password is correct."
+          : error.message,
+      );
       return;
     }
 
