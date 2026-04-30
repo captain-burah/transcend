@@ -118,6 +118,28 @@ const heroImages = {
   contact: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1900&q=85",
 };
 
+type ContactLink = {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  external?: boolean;
+};
+
+const contactLinks: ContactLink[] = [
+  { label: "hello@transcendhq.com", href: "mailto:hello@transcendhq.com", icon: Mail },
+  { label: "+971 50 625 0843", href: "tel:+971506250843", icon: Phone },
+  { label: "WhatsApp", href: "https://wa.me/971506250843", icon: MessageCircle, external: true },
+  { label: "www.transcendhq.com", href: "https://www.transcendhq.com", icon: Globe2, external: true },
+  { label: "/company/transcendhq", href: "https://www.linkedin.com/company/transcendhq", icon: Linkedin, external: true },
+  { label: "@transcendhq", href: "https://www.instagram.com/transcendhq", icon: Instagram, external: true },
+];
+
+const socialLinks: ContactLink[] = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/transcendhq", icon: Linkedin, external: true },
+  { label: "Instagram", href: "https://www.instagram.com/transcendhq", icon: Instagram, external: true },
+  { label: "Facebook", href: "https://www.facebook.com/transcendhq", icon: Facebook, external: true },
+];
+
 const servicePillars = [
   {
     title: "Performance Excellence",
@@ -2478,15 +2500,13 @@ function ContactPage() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const message = String(form.get("message") ?? "").trim();
     const payload = {
       name: String(form.get("name") ?? ""),
       email: String(form.get("email") ?? ""),
       phone: String(form.get("phone") ?? ""),
       company: String(form.get("company") ?? ""),
-      sector: String(form.get("sector") ?? ""),
-      team_size: String(form.get("team_size") ?? ""),
-      challenge: String(form.get("challenge") ?? ""),
-      message: String(form.get("challenge") ?? ""),
+      message: message || null,
     };
 
     setStatus("Sending...");
@@ -2521,9 +2541,7 @@ function ContactPage() {
               <input className="contact-input" name="email" placeholder="Email" required type="email" />
               <input className="contact-input" name="phone" placeholder="Phone / WhatsApp" />
               <input className="contact-input" name="company" placeholder="Company" />
-              <input className="contact-input" name="sector" placeholder="Sector" />
-              <input className="contact-input" name="team_size" placeholder="Team size" />
-              <textarea className="contact-input min-h-36 md:col-span-2" name="challenge" placeholder="Tell us what is not working" required />
+              <textarea className="contact-input min-h-36 md:col-span-2" name="message" placeholder="Tell us what is not working (optional)" />
             </div>
             <button className="gold-button mt-5" type="submit">
               Send My Enquiry <ArrowRight size={18} />
@@ -2533,18 +2551,18 @@ function ContactPage() {
           <div className="space-y-6">
             <Panel className="p-7">
               <h2 className="brand-white font-heading text-3xl font-bold">Direct <Gold>Contact</Gold></h2>
-              {[
-                [Mail, "hello@transcendhq.com"],
-                [Phone, "+971 50 625 0843"],
-                [MessageCircle, "WhatsApp"],
-                [Globe2, "www.transcendhq.com"],
-                [Linkedin, "/company/transcendhq"],
-                [Instagram, "@transcendhq"],
-              ].map(([Icon, text]) => (
-                <div className="brand-white mt-5 flex items-center gap-3" key={String(text)}>
+              {contactLinks.map(({ icon: Icon, label, href, external }) => (
+                <a
+                  aria-label={`Open ${label}`}
+                  className="brand-white mt-5 flex items-center gap-3 transition hover:!text-[#C9952A]"
+                  href={href}
+                  key={label}
+                  rel={external ? "noopener noreferrer" : undefined}
+                  target={external ? "_blank" : undefined}
+                >
                   <Icon className="brand-gold" size={21} />
-                  <span className="font-semibold">{String(text)}</span>
-                </div>
+                  <span className="font-semibold">{label}</span>
+                </a>
               ))}
             </Panel>
           </div>
@@ -2740,14 +2758,15 @@ function Footer() {
         </div>
         <div>
           <h2 className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.24em]">Contact</h2>
-          <div className="brand-subtle mt-5 flex flex-wrap gap-x-7 gap-y-3 text-sm">
-            <span>hello@transcendhq.com</span>
-            <span>www.transcendhq.com</span>
-            <span>+971 50 625 0843</span>
+          <div className="brand-subtle mt-5 flex flex-wrap gap-x-7 gap-y-3 text-sm">          
+            <span><b>E:</b> <a href="mailto:hello@transcendhq.com">hello@transcendhq.com</a></span><br />
+            <span><b>W:</b> <a href="https://www.transcendhq.com" target="_blank" rel="noopener noreferrer">www.transcendhq.com</a></span><br />
+            <span><b>P:</b> <a href="tel:+971506250843">+971 50 625 0843</a></span><br />
+            <span><b>A:</b> Meydan Grantstand, 6th Floor, Meydan Road, Nad Al Sheba, PO Box 49561, Dubai, UAE.</span>
           </div>
           <div className="mt-6 flex gap-5">
-            {[Linkedin, Instagram, Facebook].map((Icon, index) => (
-              <a className="brand-gold hover:!text-white" href="#" key={index} aria-label="Social profile">
+            {socialLinks.map(({ icon: Icon, label, href }) => (
+              <a className="brand-gold hover:!text-white" href={href} key={label} aria-label={`${label} profile`} target="_blank" rel="noopener noreferrer">
                 <Icon size={21} />
               </a>
             ))}
