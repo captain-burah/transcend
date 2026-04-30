@@ -2114,7 +2114,8 @@ function InsightsDashboardPage() {
             </div>
           </header>
 
-          <div className="grid gap-6 p-6 lg:p-10 xl:grid-cols-[1.08fr_.92fr]">
+          {activeWorkspace === "articles" ? (
+          <div className="mx-auto grid max-w-[1500px] gap-6 p-6 lg:p-10 xl:grid-cols-[minmax(0,1.15fr)_minmax(380px,.85fr)]">
             <section className="rounded-3xl border border-white/10 bg-[#0D2B4D] p-6 shadow-2xl shadow-black/20">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -2187,13 +2188,14 @@ function InsightsDashboardPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                  <button className="gold-button" type="submit">
+                  <button className="gold-button disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} type="submit">
                     {editingId ? "Update Article" : "Save Article"} <Save size={18} />
                   </button>
                   <Link className="ghost-button" to="/insights">
                     Preview Public Page <Eye size={18} />
                   </Link>
                 </div>
+                {!canManageArticles && <p className="text-sm text-white/62">Viewer access is read-only. Ask an admin to change your role before editing content.</p>}
                 {status && <p className="text-sm text-white/68">{status}</p>}
               </form>
             </section>
@@ -2230,7 +2232,7 @@ function InsightsDashboardPage() {
                     <p className="brand-gold font-heading text-xs font-bold uppercase tracking-[0.26em]">Article Library</p>
                     <h3 className="mt-2 font-heading text-xl font-bold">Manage content</h3>
                   </div>
-                  <button className="rounded-xl border border-white/20 p-3 text-white/70 hover:bg-white/10" onClick={resetForm} type="button" aria-label="Create new article">
+                  <button className="rounded-xl border border-white/20 p-3 text-white/70 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} onClick={resetForm} type="button" aria-label="Create new article">
                     <Plus size={18} />
                   </button>
                 </div>
@@ -2272,24 +2274,24 @@ function InsightsDashboardPage() {
                         <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10" onClick={() => editArticle(article)} type="button">
                           Edit <Edit3 className="ml-1 inline" size={14} />
                         </button>
-                        <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10" onClick={() => duplicateArticle(article)} type="button">
+                        <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} onClick={() => duplicateArticle(article)} type="button">
                           Duplicate <Copy className="ml-1 inline" size={14} />
                         </button>
                         {article.status === "published" ? (
-                          <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10" onClick={() => updateArticleStatus(article, "draft")} type="button">
+                          <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} onClick={() => updateArticleStatus(article, "draft")} type="button">
                             Unpublish
                           </button>
                         ) : (
-                          <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10" onClick={() => updateArticleStatus(article, "published")} type="button">
+                          <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} onClick={() => updateArticleStatus(article, "published")} type="button">
                             Publish
                           </button>
                         )}
                         {article.status === "published" && !article.featured && (
-                          <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10" onClick={() => setFeaturedArticle(article)} type="button">
+                          <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} onClick={() => setFeaturedArticle(article)} type="button">
                             Feature <Star className="ml-1 inline" size={14} />
                           </button>
                         )}
-                        <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10" onClick={() => deleteArticle(article)} type="button">
+                        <button className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageArticles} onClick={() => deleteArticle(article)} type="button">
                           Delete <Trash2 className="ml-1 inline" size={14} />
                         </button>
                       </div>
@@ -2307,6 +2309,163 @@ function InsightsDashboardPage() {
               </section>
             </aside>
           </div>
+          ) : (
+            <div className="mx-auto grid max-w-[1400px] gap-6 p-6 lg:p-10 xl:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]">
+              <section className="rounded-3xl border border-white/10 bg-[#0D2B4D] p-6 shadow-2xl shadow-black/20">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <p className="brand-gold font-heading text-xs font-bold uppercase tracking-[0.26em]">RBAC</p>
+                    <h3 className="mt-2 font-heading text-2xl font-bold">{editingUserId ? "Edit dashboard user" : "Add dashboard user"}</h3>
+                    <p className="mt-3 text-sm leading-6 text-white/60">
+                      Roles control what each authenticated account can do inside the dashboard.
+                    </p>
+                  </div>
+                  {editingUserId && (
+                    <button className="rounded-xl border border-white/20 px-4 py-2 text-sm font-bold text-white/80 hover:bg-white/10" onClick={resetUserForm} type="button">
+                      Cancel Edit
+                    </button>
+                  )}
+                </div>
+
+                <form className="mt-6 grid gap-5" onSubmit={submitDashboardUser}>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <label className="text-sm font-bold text-white/80">
+                      Full name
+                      <input
+                        className="contact-input mt-2"
+                        disabled={!canManageUsers}
+                        onChange={(event) => setUserForm({ ...userForm, fullName: event.target.value })}
+                        placeholder="Team member name"
+                        required
+                        value={userForm.fullName}
+                      />
+                    </label>
+                    <label className="text-sm font-bold text-white/80">
+                      Email
+                      <input
+                        className="contact-input mt-2"
+                        disabled={!canManageUsers}
+                        onChange={(event) => setUserForm({ ...userForm, email: event.target.value })}
+                        placeholder="name@company.com"
+                        required
+                        type="email"
+                        value={userForm.email}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <label className="text-sm font-bold text-white/80">
+                      Role
+                      <select
+                        className="dashboard-select mt-2"
+                        disabled={!canManageUsers}
+                        onChange={(event) => setUserForm({ ...userForm, role: event.target.value as DashboardRole })}
+                        value={userForm.role}
+                      >
+                        <option value="admin">Admin</option>
+                        <option value="editor">Editor</option>
+                        <option value="viewer">Viewer</option>
+                      </select>
+                    </label>
+                    <label className="text-sm font-bold text-white/80">
+                      Status
+                      <select
+                        className="dashboard-select mt-2"
+                        disabled={!canManageUsers}
+                        onChange={(event) => setUserForm({ ...userForm, status: event.target.value as DashboardUser["status"] })}
+                        value={userForm.status}
+                      >
+                        <option value="invited">Invited</option>
+                        <option value="active">Active</option>
+                        <option value="disabled">Disabled</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                    <p className="font-heading text-sm font-bold text-white">Role permissions</p>
+                    <div className="mt-4 grid gap-3">
+                      {(Object.keys(roleLabels) as DashboardRole[]).map((role) => (
+                        <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4" key={role}>
+                          <p className="font-heading text-sm font-bold text-[#C9952A]">{roleLabels[role]}</p>
+                          <p className="mt-1 text-sm leading-6 text-white/62">{roleDescriptions[role]}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-3">
+                    <button className="gold-button disabled:cursor-not-allowed disabled:opacity-45" disabled={!canManageUsers} type="submit">
+                      {editingUserId ? "Update User" : "Add User"} <Save size={18} />
+                    </button>
+                    <button className="ghost-button" onClick={() => loadDashboardUsers(true)} type="button">
+                      Refresh Users <RefreshCw size={18} />
+                    </button>
+                  </div>
+                  {!canManageUsers && <p className="text-sm text-white/62">Only admins can add, edit, disable, or remove dashboard users.</p>}
+                  {status && <p className="text-sm text-white/68">{status}</p>}
+                </form>
+              </section>
+
+              <section className="rounded-3xl border border-white/10 bg-[#0D2B4D] p-6 shadow-2xl shadow-black/20">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <p className="brand-gold font-heading text-xs font-bold uppercase tracking-[0.26em]">User Directory</p>
+                    <h3 className="mt-2 font-heading text-2xl font-bold">Dashboard access</h3>
+                  </div>
+                  <span className="rounded-full border border-white/15 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white/60">
+                    {dashboardUsers.length} users
+                  </span>
+                </div>
+
+                <div className="mt-6 overflow-hidden rounded-2xl border border-white/10">
+                  <div className="grid grid-cols-[1.2fr_.7fr_.6fr_.7fr] gap-4 bg-white/[0.06] px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white/45">
+                    <span>User</span>
+                    <span>Role</span>
+                    <span>Status</span>
+                    <span>Actions</span>
+                  </div>
+                  <div className="divide-y divide-white/10">
+                    {dashboardUsers.map((user) => (
+                      <div className="grid grid-cols-1 gap-4 px-4 py-4 md:grid-cols-[1.2fr_.7fr_.6fr_.7fr] md:items-center" key={user.id}>
+                        <div>
+                          <p className="font-heading text-base font-bold text-white">{user.fullName || "Unnamed user"}</p>
+                          <p className="mt-1 text-sm text-white/55">{user.email}</p>
+                        </div>
+                        <span className="w-fit rounded-full bg-[#C9952A]/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#C9952A]">{roleLabels[user.role]}</span>
+                        <span className="w-fit rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white/70">{user.status}</span>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45"
+                            disabled={!canManageUsers}
+                            onClick={() => editDashboardUser(user)}
+                            type="button"
+                          >
+                            Edit <Edit3 className="ml-1 inline" size={14} />
+                          </button>
+                          <button
+                            className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/75 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-45"
+                            disabled={!canManageUsers}
+                            onClick={() => deleteDashboardUser(user)}
+                            type="button"
+                          >
+                            Remove <Trash2 className="ml-1 inline" size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {!dashboardUsers.length && (
+                      <div className="p-8 text-center">
+                        <p className="font-heading text-lg font-bold">No dashboard users yet</p>
+                        <p className="mt-2 text-sm text-white/60">Add the first admin user to start managing RBAC.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </section>
+            </div>
+          )}
         </main>
       </div>
     </div>
