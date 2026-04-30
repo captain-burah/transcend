@@ -2038,22 +2038,32 @@ function LoginPage() {
 
     setLoading(true);
     setStatus("Signing in...");
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password: password.trim(),
-    });
-    setLoading(false);
+    const normalizedEmail = email.trim().toLowerCase();
+    const passwordAttempts = password.trim() === password ? [password] : [password, password.trim()];
+    let signInError: string | null = null;
 
-    if (error) {
-      setStatus(
-        error.message === "Invalid login credentials"
-          ? "Invalid login credentials. Confirm this email exists in Supabase Auth for the production project and that the password is correct."
-          : error.message,
-      );
-      return;
+    for (const passwordAttempt of passwordAttempts) {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password: passwordAttempt,
+      });
+
+      if (!error) {
+        setLoading(false);
+        navigate("/dashboard/insights");
+        return;
+      }
+
+      signInError = error.message;
     }
 
-    navigate("/dashboard/insights");
+    setLoading(false);
+
+    setStatus(
+      signInError === "Invalid login credentials"
+        ? "Invalid login credentials. Confirm this email exists in Supabase Auth for the production project and that the password is correct."
+        : signInError ?? "Unable to sign in.",
+    );
   }
 
   return (
