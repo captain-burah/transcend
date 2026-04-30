@@ -893,10 +893,13 @@ function RichTextEditor({
       <div
         className="rich-editor min-h-[360px] bg-white px-6 py-5 text-[15px] leading-8 text-slate-800 outline-none"
         contentEditable
+        onClick={() => editorRef.current?.focus()}
         onInput={(event) => onChange(event.currentTarget.innerHTML)}
         ref={editorRef}
         role="textbox"
+        spellCheck
         suppressContentEditableWarning
+        tabIndex={0}
       />
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-[#F8FAFC] px-4 py-2 text-xs font-semibold text-slate-500">
         <span>Rich text editor</span>
@@ -2177,13 +2180,13 @@ function InsightsDashboardPage() {
                   <textarea className="contact-input mt-2 min-h-28" onChange={(event) => setFormState({ ...formState, excerpt: event.target.value })} placeholder="Short summary shown on the Insights page" required value={formState.excerpt} />
                 </label>
 
-                <label className="text-sm font-bold text-white/80">
-                  Article body
+                <div className="text-sm font-bold text-white/80">
+                  <p>Article body</p>
                   <RichTextEditor
-                    onChange={(body) => setFormState({ ...formState, body })}
+                    onChange={(body) => setFormState((current) => ({ ...current, body }))}
                     value={formState.body}
                   />
-                </label>
+                </div>
 
                 <div className="grid gap-5 rounded-2xl border border-white/10 bg-white/[0.04] p-5 md:grid-cols-2">
                   <label className="text-sm font-bold text-white/80">
