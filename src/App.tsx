@@ -195,6 +195,29 @@ const performanceExcellencePillars = [
   },
 ];
 
+const coreValues = [
+  {
+    title: "Excellence",
+    description: "We set the standard in program design, facilitation, and post-engagement support.",
+  },
+  {
+    title: "Integrity",
+    description: "Our consultants embody the principles they teach. Authentic and credible, always.",
+  },
+  {
+    title: "Transformation",
+    description: "Every intervention is designed to fundamentally shift mindsets, behaviors, and outcomes.",
+  },
+  {
+    title: "Partnership",
+    description: "Your success is our success. We invest deeply in your context, your people, your goals.",
+  },
+  {
+    title: "Innovation",
+    description: "We continuously evolve our methods to remain at the forefront of learning science.",
+  },
+];
+
 const phases: Phase[] = [
   {
     letter: "E",
@@ -893,6 +916,9 @@ function HomePage() {
 }
 
 function AboutPage() {
+  const [activeValue, setActiveValue] = useState<string | null>(null);
+  const [hoveredValue, setHoveredValue] = useState<string | null>(null);
+
   return (
     <>
       <PageHero
@@ -971,12 +997,40 @@ function AboutPage() {
           </Panel>
         </div>
         <div className="mx-auto mt-5 grid max-w-7xl gap-5 md:grid-cols-5">
-          {["Excellence", "Integrity", "Transformation", "Partnership", "Innovation"].map((value) => (
-            <Panel className="p-5 text-center" key={value}>
-              <h3 className="brand-gold font-heading text-lg font-bold">{value}</h3>
-            </Panel>
-          ))}
+          {coreValues.map(({ title, description }) => {
+            const isOpen = activeValue === title || hoveredValue === title;
+
+            return (
+              <button
+                aria-expanded={isOpen}
+                aria-label={`${title}: ${description}`}
+                className={`brand-panel min-h-24 rounded-lg p-5 text-center transition duration-200 hover:-translate-y-1 hover:border-[#C9952A] hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#C9952A]/45 ${isOpen ? "border-[#C9952A] bg-white/10" : ""}`}
+                key={title}
+                onBlur={() => setHoveredValue(null)}
+                onClick={() => setActiveValue((current) => (current === title ? null : title))}
+                onFocus={() => setHoveredValue(title)}
+                onMouseEnter={() => setHoveredValue(title)}
+                onMouseLeave={() => setHoveredValue(null)}
+                type="button"
+              >
+                <h3 className="brand-gold font-heading text-lg font-bold">{title}</h3>
+                <p
+                  className={`brand-muted overflow-hidden text-sm leading-6 transition-all duration-200 ${isOpen ? "mt-3 max-h-48 opacity-100" : "mt-0 max-h-0 opacity-0"}`}
+                >
+                  {description}
+                </p>
+              </button>
+            );
+          })}
         </div>
+        <Panel className="mx-auto mt-12 max-w-5xl p-8 text-center md:p-10" strong>
+          <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Our Brand Promise</p>
+          <Quote className="brand-gold mx-auto mt-6" size={34} />
+          <p className="brand-white mx-auto mt-5 max-w-4xl font-heading text-2xl font-bold leading-snug md:text-3xl">
+            We don't just coach your people; <Gold>we architect your future performance.</Gold> Every engagement is a <Gold>transformation, not a transaction.</Gold>
+          </p>
+          <p className="brand-muted mt-5">- Founding Consultant, Transcend TCG -</p>
+        </Panel>
       </section>
       <CTA title={<>Work with <Gold>Transcend.</Gold></>} />
     </>
