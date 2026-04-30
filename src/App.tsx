@@ -88,6 +88,18 @@ type InsightArticle = {
   createdAt?: string;
 };
 
+type DashboardRole = "admin" | "editor" | "viewer";
+
+type DashboardUser = {
+  id: string;
+  userId: string | null;
+  email: string;
+  fullName: string;
+  role: DashboardRole;
+  status: "invited" | "active" | "disabled";
+  createdAt?: string;
+};
+
 const navItems = [
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
@@ -414,6 +426,19 @@ const defaultArticles: InsightArticle[] = [
 ];
 
 const localArticlesKey = "transcend-insight-articles";
+const localDashboardUsersKey = "transcend-dashboard-users";
+
+const roleLabels: Record<DashboardRole, string> = {
+  admin: "Admin",
+  editor: "Editor",
+  viewer: "Viewer",
+};
+
+const roleDescriptions: Record<DashboardRole, string> = {
+  admin: "Full dashboard access, user management, and publishing control.",
+  editor: "Create, edit, publish, duplicate, and delete Insights articles.",
+  viewer: "Read-only access to the dashboard and article library.",
+};
 
 function articleMeta(article: InsightArticle) {
   return `${article.category} · ${article.readTime} · ${formatArticleDate(article.publishedAt)}`;
@@ -452,6 +477,21 @@ function normalizeArticle(row: Record<string, unknown>): InsightArticle {
   };
 }
 
+function normalizeDashboardUser(row: Record<string, unknown>): DashboardUser {
+  const role = row.role === "admin" || row.role === "editor" || row.role === "viewer" ? row.role : "viewer";
+  const status = row.status === "active" || row.status === "disabled" || row.status === "invited" ? row.status : "invited";
+
+  return {
+    id: String(row.id ?? crypto.randomUUID()),
+    userId: row.user_id || row.userId ? String(row.user_id ?? row.userId) : null,
+    email: String(row.email ?? ""),
+    fullName: String(row.full_name ?? row.fullName ?? ""),
+    role,
+    status,
+    createdAt: row.created_at ? String(row.created_at) : undefined,
+  };
+}
+
 function readLocalArticles() {
   try {
     const stored = window.localStorage.getItem(localArticlesKey);
@@ -463,6 +503,30 @@ function readLocalArticles() {
 
 function saveLocalArticles(articles: InsightArticle[]) {
   window.localStorage.setItem(localArticlesKey, JSON.stringify(articles));
+}
+
+function readLocalDashboardUsers(currentEmail = "local.admin@transcend.local") {
+  try {
+    const stored = window.localStorage.getItem(localDashboardUsersKey);
+    if (stored) return (JSON.parse(stored) as Record<string, unknown>[]).map(normalizeDashboardUser);
+  } catch {
+    // fall through to seeded local admin
+  }
+
+  return [
+    {
+      id: "local-admin",
+      userId: null,
+      email: currentEmail,
+      fullName: "Local Admin",
+      role: "admin" as DashboardRole,
+      status: "active" as const,
+    },
+  ];
+}
+
+function saveLocalDashboardUsers(users: DashboardUser[]) {
+  window.localStorage.setItem(localDashboardUsersKey, JSON.stringify(users));
 }
 
 function usePublishedInsights() {
@@ -660,6 +724,13 @@ function RichTextEditor({
   const editorRef = useRef<HTMLDivElement>(null);
   const plainText = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   const wordCount = plainText ? plainText.split(" ").length : 0;
+  const fontFamilies = ["Open Sans", "Montserrat", "Arial", "Georgia", "Times New Roman"];
+  const fontSizes = [
+    { label: "Small", value: "2" },
+    { label: "Normal", value: "3" },
+    { label: "Large", value: "5" },
+    { label: "XL", value: "6" },
+  ];
 
   useEffect(() => {
     const editor = editorRef.current;
@@ -674,17 +745,18 @@ function RichTextEditor({
   }
 
   function insertLink() {
-    const url = window.prompt("Enter the URL");
+    const selectedText = window.getSelection()?.toString().trim();
+    const text = selectedText || window.prompt("Link text");
+    if (!text) return;
+    if (!selectedText) runCommand("insertText", text);
+
+    const url = window.prompt("Enter the URL", "https://");
     if (!url) return;
-    runCommand("createLink", url);
+    const normalizedUrl = /^https?:\/\//i.test(url) || url.startsWith("mailto:") ? url : `https://${url}`;
+    runCommand("createLink", normalizedUrl);
   }
 
   const toolbarGroups: Array<Array<{ label: string; command: string; icon: LucideIcon; value?: string }>> = [
-    [
-      { label: "Paragraph", command: "formatBlock", icon: Type, value: "p" },
-      { label: "Heading", command: "formatBlock", icon: Heading2, value: "h2" },
-      { label: "Quote", command: "formatBlock", icon: Quote, value: "blockquote" },
-    ],
     [
       { label: "Bold", command: "bold", icon: Bold },
       { label: "Italic", command: "italic", icon: Italic },
@@ -704,6 +776,62 @@ function RichTextEditor({
     <div className="mt-2 overflow-hidden rounded-2xl border border-white/15 bg-[#071C35] shadow-inner shadow-black/20">
       <div className="border-b border-white/10 bg-[#F8FAFC] px-3 py-2 text-[#1F2937]">
         <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+            <select
+              aria-label="Text style"
+              className="h-8 rounded-md border border-transparent bg-white px-2 text-xs font-bold text-slate-700 outline-none transition hover:bg-slate-100 focus:border-slate-300"
+              onChange={(event) => {
+                runCommand("formatBlock", event.target.value);
+                event.currentTarget.value = "p";
+              }}
+              title="Text style"
+              value="p"
+            >
+              <option value="p">Paragraph</option>
+              <option value="h2">Heading</option>
+              <option value="blockquote">Quote</option>
+            </select>
+            <select
+              aria-label="Font family"
+              className="h-8 max-w-36 rounded-md border border-transparent bg-white px-2 text-xs font-bold text-slate-700 outline-none transition hover:bg-slate-100 focus:border-slate-300"
+              defaultValue=""
+              onChange={(event) => {
+                runCommand("fontName", event.target.value);
+                event.currentTarget.value = "";
+              }}
+              title="Font family"
+            >
+              <option value="" disabled>Font</option>
+              {fontFamilies.map((font) => (
+                <option key={font} value={font}>{font}</option>
+              ))}
+            </select>
+            <select
+              aria-label="Font size"
+              className="h-8 rounded-md border border-transparent bg-white px-2 text-xs font-bold text-slate-700 outline-none transition hover:bg-slate-100 focus:border-slate-300"
+              defaultValue=""
+              onChange={(event) => {
+                runCommand("fontSize", event.target.value);
+                event.currentTarget.value = "";
+              }}
+              title="Font size"
+            >
+              <option value="" disabled>Size</option>
+              {fontSizes.map((size) => (
+                <option key={size.value} value={size.value}>{size.label}</option>
+              ))}
+            </select>
+            <label className="flex h-8 items-center gap-2 rounded-md px-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100" title="Font color">
+              Color
+              <input
+                aria-label="Font color"
+                className="h-5 w-7 cursor-pointer border-0 bg-transparent p-0"
+                defaultValue="#1f2937"
+                onChange={(event) => runCommand("foreColor", event.target.value)}
+                type="color"
+              />
+            </label>
+          </div>
           {toolbarGroups.map((group, groupIndex) => (
             <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm" key={groupIndex}>
               {group.map(({ label, command, icon: Icon, value: commandValue }) => (
@@ -1489,6 +1617,18 @@ function InsightsDashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
   const [status, setStatus] = useState("");
+  const [activeWorkspace, setActiveWorkspace] = useState<"articles" | "users">("articles");
+  const [dashboardUsers, setDashboardUsers] = useState<DashboardUser[]>([]);
+  const [currentUserRole, setCurrentUserRole] = useState<DashboardRole>("admin");
+  const [userForm, setUserForm] = useState({
+    email: "",
+    fullName: "",
+    role: "editor" as DashboardRole,
+    status: "invited" as DashboardUser["status"],
+  });
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const canManageArticles = currentUserRole === "admin" || currentUserRole === "editor";
+  const canManageUsers = currentUserRole === "admin";
 
   async function loadArticles(showStatus = false) {
     if (showStatus) setStatus("Refreshing articles...");
@@ -1515,7 +1655,38 @@ function InsightsDashboardPage() {
 
   useEffect(() => {
     loadArticles();
+    loadDashboardUsers();
   }, []);
+
+  async function loadDashboardUsers(showStatus = false) {
+    if (showStatus) setStatus("Refreshing dashboard users...");
+
+    if (!supabase) {
+      const localUsers = readLocalDashboardUsers();
+      setDashboardUsers(localUsers);
+      setCurrentUserRole("admin");
+      if (showStatus) setStatus("Loaded local dashboard users.");
+      return;
+    }
+
+    const { data: userData } = await supabase.auth.getUser();
+    const currentEmail = userData.user?.email ?? "";
+    const { data, error } = await supabase
+      .from("dashboard_users")
+      .select("id,user_id,email,full_name,role,status,created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setStatus(error.message);
+      return;
+    }
+
+    const normalizedUsers = (data ?? []).map(normalizeDashboardUser);
+    setDashboardUsers(normalizedUsers);
+    const currentProfile = normalizedUsers.find((user) => user.userId === userData.user?.id || user.email.toLowerCase() === currentEmail.toLowerCase());
+    setCurrentUserRole(currentProfile?.role ?? "viewer");
+    if (showStatus) setStatus("Dashboard users refreshed.");
+  }
 
   function getArticlePayload(article: InsightArticle) {
     return {
@@ -1584,6 +1755,11 @@ function InsightsDashboardPage() {
 
   async function submitArticle(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!canManageArticles) {
+      setStatus("Your role is viewer. Article changes are disabled.");
+      return;
+    }
+
     const existingArticle = articles.find((article) => article.id === editingId);
     const article: InsightArticle = {
       id: editingId ?? crypto.randomUUID(),
@@ -1628,6 +1804,11 @@ function InsightsDashboardPage() {
   }
 
   async function updateArticleStatus(article: InsightArticle, nextStatus: "draft" | "published") {
+    if (!canManageArticles) {
+      setStatus("Your role is viewer. Article changes are disabled.");
+      return;
+    }
+
     const nextArticle: InsightArticle = {
       ...article,
       status: nextStatus,
@@ -1641,6 +1822,11 @@ function InsightsDashboardPage() {
   }
 
   async function setFeaturedArticle(article: InsightArticle) {
+    if (!canManageArticles) {
+      setStatus("Your role is viewer. Article changes are disabled.");
+      return;
+    }
+
     if (article.status !== "published") {
       setStatus("Only published articles can be featured.");
       return;
@@ -1653,6 +1839,11 @@ function InsightsDashboardPage() {
   }
 
   async function duplicateArticle(article: InsightArticle) {
+    if (!canManageArticles) {
+      setStatus("Your role is viewer. Article changes are disabled.");
+      return;
+    }
+
     const duplicate: InsightArticle = {
       ...article,
       id: crypto.randomUUID(),
@@ -1670,6 +1861,11 @@ function InsightsDashboardPage() {
   }
 
   async function deleteArticle(article: InsightArticle) {
+    if (!canManageArticles) {
+      setStatus("Your role is viewer. Article changes are disabled.");
+      return;
+    }
+
     const confirmed = window.confirm(`Delete "${article.title}"? This cannot be undone.`);
     if (!confirmed) return;
 
@@ -1693,6 +1889,137 @@ function InsightsDashboardPage() {
     setStatus("Article deleted.");
   }
 
+  function resetUserForm() {
+    setUserForm({
+      email: "",
+      fullName: "",
+      role: "editor",
+      status: "invited",
+    });
+    setEditingUserId(null);
+  }
+
+  function syncLocalDashboardUsers(nextUsers: DashboardUser[]) {
+    setDashboardUsers(nextUsers);
+    saveLocalDashboardUsers(nextUsers);
+  }
+
+  async function submitDashboardUser(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!canManageUsers) {
+      setStatus("Only admins can manage dashboard users.");
+      return;
+    }
+
+    const email = userForm.email.trim().toLowerCase();
+    const duplicate = dashboardUsers.some((user) => user.email.toLowerCase() === email && user.id !== editingUserId);
+    if (duplicate) {
+      setStatus("A dashboard user with that email already exists.");
+      return;
+    }
+
+    const payload = {
+      email,
+      full_name: userForm.fullName.trim(),
+      role: userForm.role,
+      status: userForm.status,
+      updated_at: new Date().toISOString(),
+    };
+
+    setStatus(editingUserId ? "Updating dashboard user..." : "Adding dashboard user...");
+
+    if (!supabase) {
+      const nextUser: DashboardUser = {
+        id: editingUserId ?? crypto.randomUUID(),
+        userId: dashboardUsers.find((user) => user.id === editingUserId)?.userId ?? null,
+        email: payload.email,
+        fullName: payload.full_name,
+        role: payload.role,
+        status: payload.status,
+        createdAt: dashboardUsers.find((user) => user.id === editingUserId)?.createdAt,
+      };
+      syncLocalDashboardUsers([nextUser, ...dashboardUsers.filter((user) => user.id !== nextUser.id)]);
+      resetUserForm();
+      setStatus(editingUserId ? "Dashboard user updated locally." : "Dashboard user added locally.");
+      return;
+    }
+
+    const query = editingUserId
+      ? supabase
+          .from("dashboard_users")
+          .update(payload)
+          .eq("id", editingUserId)
+          .select("id,user_id,email,full_name,role,status,created_at")
+          .single()
+      : supabase
+          .from("dashboard_users")
+          .insert(payload)
+          .select("id,user_id,email,full_name,role,status,created_at")
+          .single();
+
+    const { data, error } = await query;
+    if (error || !data) {
+      setStatus(error?.message ?? "Unable to save dashboard user.");
+      return;
+    }
+
+    const savedUser = normalizeDashboardUser(data);
+    setDashboardUsers([savedUser, ...dashboardUsers.filter((user) => user.id !== savedUser.id)]);
+    resetUserForm();
+    setStatus(editingUserId ? "Dashboard user updated." : "Dashboard user added.");
+  }
+
+  function editDashboardUser(user: DashboardUser) {
+    if (!canManageUsers) {
+      setStatus("Only admins can manage dashboard users.");
+      return;
+    }
+
+    setEditingUserId(user.id);
+    setUserForm({
+      email: user.email,
+      fullName: user.fullName,
+      role: user.role,
+      status: user.status,
+    });
+    setActiveWorkspace("users");
+    setStatus("Editing dashboard user.");
+  }
+
+  async function deleteDashboardUser(user: DashboardUser) {
+    if (!canManageUsers) {
+      setStatus("Only admins can manage dashboard users.");
+      return;
+    }
+
+    if (user.role === "admin" && dashboardUsers.filter((item) => item.role === "admin" && item.status !== "disabled").length <= 1) {
+      setStatus("Keep at least one active admin.");
+      return;
+    }
+
+    const confirmed = window.confirm(`Remove dashboard access for ${user.email}?`);
+    if (!confirmed) return;
+
+    setStatus("Removing dashboard user...");
+
+    if (!supabase) {
+      syncLocalDashboardUsers(dashboardUsers.filter((item) => item.id !== user.id));
+      if (editingUserId === user.id) resetUserForm();
+      setStatus("Dashboard user removed locally.");
+      return;
+    }
+
+    const { error } = await supabase.from("dashboard_users").delete().eq("id", user.id);
+    if (error) {
+      setStatus(error.message);
+      return;
+    }
+
+    setDashboardUsers(dashboardUsers.filter((item) => item.id !== user.id));
+    if (editingUserId === user.id) resetUserForm();
+    setStatus("Dashboard user removed.");
+  }
+
   async function signOut() {
     await supabase?.auth.signOut();
     navigate("/login");
@@ -1709,8 +2036,8 @@ function InsightsDashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#071C35] text-white">
-      <div className="grid min-h-screen lg:grid-cols-[280px_1fr]">
-        <aside className="border-r border-white/10 bg-[#09233F] p-6">
+      <div className="grid min-h-screen lg:grid-cols-[320px_1fr]">
+        <aside className="border-r border-white/10 bg-[#09233F] p-6 lg:sticky lg:top-0 lg:h-screen">
           <img
             alt="Transcend Consultancy"
             className="h-14 w-auto"
@@ -1725,9 +2052,20 @@ function InsightsDashboardPage() {
           </div>
 
           <nav className="mt-10 grid gap-2">
-            <span className="rounded-xl bg-white/10 px-4 py-3 text-sm font-bold text-white">
+            <button
+              className={`rounded-xl px-4 py-3 text-left text-sm font-bold ${activeWorkspace === "articles" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+              onClick={() => setActiveWorkspace("articles")}
+              type="button"
+            >
               Articles
-            </span>
+            </button>
+            <button
+              className={`rounded-xl px-4 py-3 text-left text-sm font-bold ${activeWorkspace === "users" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+              onClick={() => setActiveWorkspace("users")}
+              type="button"
+            >
+              Users & Roles
+            </button>
             <Link className="rounded-xl px-4 py-3 text-sm font-semibold text-white/70 hover:bg-white/10 hover:text-white" to="/insights">
               Public Insights Page
             </Link>
@@ -1739,6 +2077,11 @@ function InsightsDashboardPage() {
           <button className="mt-10 w-full rounded-xl border border-white/20 px-4 py-3 text-sm font-bold text-white/80 hover:bg-white/10" onClick={signOut} type="button">
             Sign Out
           </button>
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Current role</p>
+            <p className="mt-1 font-heading text-lg font-bold text-[#C9952A]">{roleLabels[currentUserRole]}</p>
+            <p className="mt-2 text-xs leading-5 text-white/55">{roleDescriptions[currentUserRole]}</p>
+          </div>
         </aside>
 
         <main className="min-w-0">
@@ -1747,15 +2090,16 @@ function InsightsDashboardPage() {
               <div>
                 <p className="brand-gold font-heading text-xs font-bold uppercase tracking-[0.28em]">Article Workspace</p>
                 <h2 className="mt-2 font-heading text-3xl font-bold">
-                  {editingId ? "Edit article" : "Create a new article"}
+                  {activeWorkspace === "users" ? "Users and roles" : editingId ? "Edit article" : "Create a new article"}
                 </h2>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid gap-3 sm:grid-cols-4">
                   {[
                     ["Total", articles.length],
                     ["Published", publishedCount],
                     ["Drafts", draftCount],
+                    ["Users", dashboardUsers.length],
                   ].map(([label, value]) => (
                     <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3" key={label}>
                       <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">{label}</p>
