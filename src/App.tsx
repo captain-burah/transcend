@@ -11,6 +11,7 @@ import {
   Building2,
   CalendarDays,
   CheckCircle2,
+  ChevronDown,
   ChevronRight,
   Clock3,
   Copy,
@@ -103,7 +104,6 @@ type DashboardUser = {
 const navItems = [
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "ELEVATE™", href: "/elevate" },
   { label: "Verticals", href: "/verticals" },
   { label: "Insights", href: "/insights" },
 ];
@@ -145,6 +145,7 @@ const servicePillars = [
     title: "Performance Excellence",
     subtitle: "Upscaling capabilities",
     icon: Trophy,
+    path: "/services/Performance Excellence",
     copy:
       "A business strategy framework designed to build and scale impactful, high-performing organizations across sales mastery, HR excellence, customer experience, and revenue modeling.",
     bullets: ["Sales Mastery", "From pipeline to performance", "HR Excellence", "Customer Experience", "Revenue Modeling"],
@@ -154,6 +155,7 @@ const servicePillars = [
     title: "Organizational Development",
     subtitle: "Vision, mission & corporate brand strategy",
     icon: Layers3,
+    path: "/services/Organizational Development",
     copy:
       "Structured C-suite workshops that help leadership teams clarify, articulate, and embed the core identity of the organization.",
     bullets: ["Vision Statement", "Mission Statement", "Core values framework", "Brand persona & collateral", "Employer value proposition"],
@@ -163,6 +165,7 @@ const servicePillars = [
     title: "Corporate Events Management",
     subtitle: "Events that inspire, align and celebrate",
     icon: CalendarDays,
+    path: "/services/Corporate Events Management",
     copy:
       "Precision-planned sales conferences, leadership summits, award ceremonies, launches, seminars, workshops, retreats, and recognition events.",
     bullets: ["Sales kick-offs", "Strategy retreats", "Award ceremonies", "Product launches", "Town halls and engagement programs"],
@@ -225,6 +228,169 @@ const performanceExcellencePillars = [
       "Pricing strategy and deal economics",
       "Sales productivity and unit economics modeling",
       "Board-ready financial storytelling and KPI dashboards",
+    ],
+  },
+];
+
+const serviceDetailPages = [
+  {
+    title: "Performance Excellence",
+    eyebrow: "Upscaling Capabilities",
+    slug: "Performance Excellence",
+    path: "/services/Performance Excellence",
+    icon: Trophy,
+    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1900&q=85",
+    illustration: "https://cdn.undraw.co/illustration/analytics-setup_ptrz.svg",
+    secondaryIllustration: "https://cdn.undraw.co/illustrations/growth-analytics_bhy7.svg",
+    visualHeadline: "Performance you can see.",
+    visualCopy: "Dashboards, coaching rhythms, and revenue decisions working from the same source of truth.",
+    impactHeadline: "Turn scattered effort into measurable momentum.",
+    featureHeadline: "Four engines. One performance system.",
+    featureCopy: "Sales, customers, people, and revenue stop operating in separate lanes.",
+    metrics: [
+      ["Sales", "Conversion discipline"],
+      ["CX", "Retention signals"],
+      ["People", "Performance culture"],
+      ["Revenue", "Decision-ready models"],
+    ],
+    description:
+      "Performance Excellence consulting in Dubai for sales mastery, customer experience, HR excellence, and revenue modeling that turns capability into measurable commercial performance.",
+    hero:
+      "A connected operating framework for organizations that want stronger sales systems, sharper people capability, better customer experience, and cleaner revenue decisions.",
+    aiSummary:
+      "Transcend Consultancy provides Performance Excellence programs for UAE and GCC organizations, combining sales mastery, customer experience design, HR excellence, and revenue modeling into a measurable business transformation framework.",
+    outcomes: ["Higher sales conversion and forecast quality", "Stronger customer retention and service consistency", "Performance cultures supported by talent systems", "Revenue models leaders can use for decisions"],
+    sections: performanceExcellencePillars.map(({ title, subtitle, copy, bullets }) => ({
+      title,
+      subtitle,
+      copy,
+      bullets,
+    })),
+    process: ["Diagnose commercial and people performance gaps", "Design the operating rituals, playbooks, and metrics", "Build capability through workshops and coaching", "Embed dashboards, governance, and leadership cadence"],
+    faq: [
+      ["Who is Performance Excellence for?", "It is designed for leadership teams that need measurable improvement across sales, customer experience, HR capability, or revenue planning."],
+      ["Can it be delivered as a focused engagement?", "Yes. The framework can run as a full transformation program or a focused intervention around one or two priority pillars."],
+      ["How is success measured?", "Success metrics are defined at the start and can include conversion, pipeline quality, retention, NPS, productivity, and revenue forecast accuracy."],
+    ],
+  },
+  {
+    title: "Organizational Development",
+    eyebrow: "Vision, Mission & Brand Strategy",
+    slug: "Organizational Development",
+    path: "/services/Organizational Development",
+    icon: Layers3,
+    image: "https://images.unsplash.com/photo-1558403194-611308249627?auto=format&fit=crop&w=1900&q=85",
+    illustration: "https://cdn.undraw.co/illustrations/team-collaboration_phnf.svg",
+    secondaryIllustration: "https://cdn.undraw.co/illustrations/business-plan_wv9q.svg",
+    visualHeadline: "Alignment, made visible.",
+    visualCopy: "Leadership teams leave with a language, identity, and decision system everyone can use.",
+    impactHeadline: "Give the organization a center of gravity.",
+    featureHeadline: "From leadership thinking to culture people feel.",
+    featureCopy: "The workshop turns abstract identity into practical choices, messages, and behaviors.",
+    metrics: [
+      ["Vision", "Future direction"],
+      ["Mission", "Purpose and value"],
+      ["Values", "Behavioral standards"],
+      ["EVP", "Talent promise"],
+    ],
+    description:
+      "Organizational Development workshops in Dubai for vision, mission, values, brand persona, employer value proposition, and leadership alignment.",
+    hero:
+      "Strategic facilitation for leadership teams that need sharper identity, stronger alignment, and a culture people can actually use in decisions.",
+    aiSummary:
+      "Transcend Consultancy facilitates Organizational Development workshops that help companies define their vision, mission, core values, brand persona, employer value proposition, and culture narrative.",
+    outcomes: ["A clear vision and mission leaders can communicate", "Values translated into behaviors and decisions", "A differentiated brand persona and EVP", "Leadership alignment around culture and identity"],
+    sections: [
+      {
+        title: "Vision Statement",
+        subtitle: "Direction people can rally behind",
+        copy: "We help leadership teams articulate a future state that is ambitious, credible, and specific enough to guide strategy.",
+        bullets: ["Executive discovery interviews", "Vision territory mapping", "Leadership alignment workshops", "Board-ready statement refinement"],
+      },
+      {
+        title: "Mission Statement",
+        subtitle: "Your purpose in practical language",
+        copy: "We translate customer value, market role, and organizational strengths into a mission statement that teams can apply.",
+        bullets: ["Customer and stakeholder value mapping", "Purpose and promise definition", "Messaging hierarchy", "Internal launch guidance"],
+      },
+      {
+        title: "Core Values Framework",
+        subtitle: "Culture that shows up in behavior",
+        copy: "Values become useful when they define decisions, hiring, leadership expectations, and recognition.",
+        bullets: ["Values discovery", "Behavioral definitions", "Decision principles", "Culture activation plan"],
+      },
+      {
+        title: "Brand Persona & EVP",
+        subtitle: "A distinctive market and talent voice",
+        copy: "We define how your organization should sound, feel, and show up for customers, candidates, and employees.",
+        bullets: ["Brand personality attributes", "Employer value proposition", "Messaging pillars", "Collateral direction"],
+      },
+    ],
+    process: ["Interview leaders and review current messaging", "Facilitate C-suite alignment workshops", "Draft and refine VMV and brand assets", "Create an activation roadmap for internal adoption"],
+    faq: [
+      ["What does an Organizational Development workshop produce?", "It can produce vision, mission, values, brand persona, EVP, and an activation roadmap for leaders and teams."],
+      ["Is this only for large companies?", "No. It is useful for startups, SMEs, and enterprises when identity, culture, or leadership alignment needs to become clearer."],
+      ["Can you support internal rollout?", "Yes. Transcend can help convert the outputs into internal communication, workshops, and leader talking points."],
+    ],
+  },
+  {
+    title: "Corporate Events Management",
+    eyebrow: "Events That Inspire, Align And Celebrate",
+    slug: "Corporate Events Management",
+    path: "/services/Corporate Events Management",
+    icon: CalendarDays,
+    image: "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1900&q=85",
+    illustration: "https://cdn.undraw.co/illustration/events-calendar_sudy.svg",
+    secondaryIllustration: "https://cdn.undraw.co/illustrations/conference-call_ccsp.svg",
+    visualHeadline: "Moments that move people.",
+    visualCopy: "Every event is built around the audience journey: what they feel, remember, and do next.",
+    impactHeadline: "Make the room align before it leaves.",
+    featureHeadline: "Strategy, stagecraft, and execution in sync.",
+    featureCopy: "The event becomes a business instrument, not a date on the calendar.",
+    metrics: [
+      ["Message", "Clear narrative"],
+      ["Flow", "Audience journey"],
+      ["Energy", "Memorable moments"],
+      ["Follow-up", "Action after event"],
+    ],
+    description:
+      "Corporate events management in Dubai for sales conferences, leadership summits, award ceremonies, product launches, town halls, seminars, workshops, and retreats.",
+    hero:
+      "End-to-end event strategy, planning, and execution for corporate moments that need to move people, align teams, and protect the brand.",
+    aiSummary:
+      "Transcend Consultancy manages corporate events in the UAE, including sales kickoffs, leadership summits, strategy retreats, recognition events, product launches, town halls, seminars, and workshops.",
+    outcomes: ["Sharper message architecture and audience journey", "Smooth planning from concept to execution", "Stronger attendee engagement and recognition moments", "Post-event follow-through tied to business goals"],
+    sections: [
+      {
+        title: "Sales Conferences & Kick-Offs",
+        subtitle: "Align the field around the year ahead",
+        copy: "We design agendas, messaging, recognition, and activation moments that prepare teams for commercial execution.",
+        bullets: ["Theme and agenda design", "Speaker flow and run-of-show", "Recognition moments", "Post-event action planning"],
+      },
+      {
+        title: "Leadership Summits & Retreats",
+        subtitle: "Create space for strategic decisions",
+        copy: "We support leadership offsites with facilitation, experience design, and logistics that keep the conversation productive.",
+        bullets: ["Strategic workshop design", "Facilitation support", "Venue and flow planning", "Decision capture and next steps"],
+      },
+      {
+        title: "Launches, Town Halls & Recognition",
+        subtitle: "Make important moments land",
+        copy: "From product launches to town halls and awards, we shape the experience so the message is clear and memorable.",
+        bullets: ["Product launch planning", "Town hall production", "Award ceremony design", "Client appreciation events"],
+      },
+      {
+        title: "Seminars, Workshops & Engagement",
+        subtitle: "Useful content, not passive attendance",
+        copy: "We create interactive formats that keep participants involved and connect event energy to post-event behavior.",
+        bullets: ["Workshop agenda design", "Team-building programs", "Audience engagement mechanics", "Feedback and impact reporting"],
+      },
+    ],
+    process: ["Clarify event goals, audience, and business message", "Design the agenda, experience, and production requirements", "Coordinate vendors, logistics, speakers, and run-of-show", "Measure feedback and convert momentum into follow-up actions"],
+    faq: [
+      ["What corporate events do you manage?", "Transcend manages sales conferences, leadership summits, retreats, seminars, workshops, award ceremonies, launches, town halls, and engagement programs."],
+      ["Can you manage both strategy and logistics?", "Yes. The service covers event concept, message architecture, planning, vendor coordination, and execution support."],
+      ["Do you handle UAE-based events?", "Yes. Transcend is UAE based and supports Dubai, UAE, GCC, and selected regional corporate events."],
     ],
   },
 ];
@@ -330,14 +496,14 @@ const verticals: Vertical[] = [
     image: "https://images.unsplash.com/photo-1560472355-536de3962603?auto=format&fit=crop&w=1200&q=85",
   },
   {
-    id: "telecommunications",
-    name: "Telecommunications",
-    description: "Consumer, SME and channel sales capability",
+    id: "freight-logistics",
+    name: "Freight & Logistics",
+    description: "Freight forwarding, warehousing and supply chain teams",
     why:
-      "Product commoditization makes customer-centric selling the only sustainable differentiator for telcos and channel partners.",
-    programs: ["Postpaid and SME capability programs", "Channel partner enablement", "CX enhancement matrix", "Sales manager coaching clinics", "Annual sales kick-off management"],
-    pains: ["Competing on price instead of value", "High churn", "Under-performing channel partners"],
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=85",
+      "Freight and logistics teams compete on reliability, responsiveness, and trust. Structured selling, stronger account management, and disciplined service recovery help operators protect margin while winning complex B2B accounts.",
+    programs: ["Freight sales capability programs", "Key account management for logistics teams", "Customer experience and service recovery workshops", "Warehouse and operations leadership alignment", "Logistics conference and recognition events"],
+    pains: ["Price-led freight conversations", "Low retention in key accounts", "Weak handoff between sales and operations"],
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=85",
   },
   {
     id: "real-estate",
@@ -551,6 +717,160 @@ function saveLocalDashboardUsers(users: DashboardUser[]) {
   window.localStorage.setItem(localDashboardUsersKey, JSON.stringify(users));
 }
 
+function siteUrl(path = "") {
+  return `https://www.transcendhq.com${path}`;
+}
+
+function upsertMeta(selector: string, create: () => HTMLMetaElement, value: string) {
+  let element = document.head.querySelector<HTMLMetaElement>(selector);
+  if (!element) {
+    element = create();
+    document.head.appendChild(element);
+  }
+  element.setAttribute("content", value);
+}
+
+function SEO({
+  title,
+  description,
+  path,
+  image = heroImages.services,
+  jsonLd,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}) {
+  useEffect(() => {
+    const canonicalUrl = siteUrl(path);
+    document.title = title;
+
+    upsertMeta('meta[name="description"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("name", "description");
+      return meta;
+    }, description);
+    upsertMeta('meta[name="robots"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("name", "robots");
+      return meta;
+    }, "index, follow, max-image-preview:large");
+    upsertMeta('meta[property="og:title"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("property", "og:title");
+      return meta;
+    }, title);
+    upsertMeta('meta[property="og:description"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("property", "og:description");
+      return meta;
+    }, description);
+    upsertMeta('meta[property="og:url"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("property", "og:url");
+      return meta;
+    }, canonicalUrl);
+    upsertMeta('meta[property="og:image"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("property", "og:image");
+      return meta;
+    }, image);
+    upsertMeta('meta[name="twitter:card"]', () => {
+      const meta = document.createElement("meta");
+      meta.setAttribute("name", "twitter:card");
+      return meta;
+    }, "summary_large_image");
+
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", canonicalUrl);
+
+    document.querySelectorAll('script[data-transcend-seo="true"]').forEach((script) => script.remove());
+    if (jsonLd) {
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.dataset.transcendSeo = "true";
+      script.textContent = JSON.stringify(jsonLd);
+      document.head.appendChild(script);
+    }
+  }, [description, image, jsonLd, path, title]);
+
+  return null;
+}
+
+function serviceJsonLd(service: (typeof serviceDetailPages)[number]) {
+  const url = siteUrl(service.path);
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: service.title,
+      description: service.description,
+      serviceType: service.title,
+      areaServed: ["Dubai", "United Arab Emirates", "GCC", "MEA"],
+      provider: {
+        "@type": "Organization",
+        name: "Transcend Consultancy",
+        url: "https://www.transcendhq.com",
+        email: "hello@transcendhq.com",
+        telephone: "+971506250843",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Meydan Grandstand, 6th Floor, Meydan Road, Nad Al Sheba",
+          addressLocality: "Dubai",
+          addressCountry: "AE",
+        },
+      },
+      url,
+      image: service.image,
+      audience: {
+        "@type": "BusinessAudience",
+        audienceType: "Executives, HR leaders, sales leaders, business owners, and corporate teams",
+      },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: `${service.title} capabilities`,
+        itemListElement: service.sections.map((section) => ({
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: section.title,
+            description: section.copy,
+          },
+        })),
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: service.faq.map(([question, answer]) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: answer,
+        },
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: siteUrl("/") },
+        { "@type": "ListItem", position: 2, name: "Services", item: siteUrl("/services") },
+        { "@type": "ListItem", position: 3, name: service.title, item: url },
+      ],
+    },
+  ];
+}
+
 function usePublishedInsights() {
   const [articles, setArticles] = useState<InsightArticle[]>(defaultArticles);
 
@@ -600,25 +920,66 @@ function Gold({ children }: { children: ReactNode }) {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const serviceMenuItems = serviceDetailPages.map(({ title, path, eyebrow }) => ({
+    title,
+    path,
+    eyebrow,
+  }));
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-navy/95 shadow-lg shadow-navy/15 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         <Logo />
         <div className="hidden items-center gap-8 lg:flex">
-          {navItems.map((item) => (
-            <NavLink
-              className={({ isActive }) =>
-                `relative font-heading text-sm font-semibold transition after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-left after:rounded-full after:bg-gold after:transition-transform ${
-                  isActive ? "brand-gold after:scale-x-100" : "brand-muted after:scale-x-0 hover:!text-white hover:after:scale-x-100"
-                }`
-              }
-              key={item.href}
-              to={item.href}
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          {navItems.map((item) =>
+            item.href === "/services" ? (
+              <div className="group relative" key={item.href}>
+                <NavLink
+                  className={({ isActive }) =>
+                    `relative inline-flex items-center gap-1.5 font-heading text-sm font-semibold transition after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-left after:rounded-full after:bg-gold after:transition-transform ${
+                      isActive ? "brand-gold after:scale-x-100" : "brand-muted after:scale-x-0 hover:!text-white hover:after:scale-x-100"
+                    }`
+                  }
+                  to={item.href}
+                >
+                  {item.label}
+                  <ChevronDown className="transition-transform group-hover:rotate-180" size={15} />
+                </NavLink>
+                <div className="invisible absolute left-1/2 top-full z-50 w-[360px] -translate-x-1/2 pt-5 opacity-0 transition duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                  <div className="rounded-lg border border-gold/25 bg-[#08203D]/95 p-2 shadow-2xl shadow-black/25 backdrop-blur-xl">
+                    <Link
+                      className="mb-1 block rounded-md px-4 py-3 font-heading text-sm font-bold text-white transition hover:bg-white/10 hover:text-[#C9952A]"
+                      to="/services"
+                    >
+                      All Services
+                    </Link>
+                    {serviceMenuItems.map((service) => (
+                      <Link
+                        className="block rounded-md px-4 py-3 transition hover:bg-white/10"
+                        key={service.path}
+                        to={service.path}
+                      >
+                        <span className="brand-white block font-heading text-sm font-bold">{service.title}</span>
+                        <span className="brand-subtle mt-1 block text-xs leading-5">{service.eyebrow}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <NavLink
+                className={({ isActive }) =>
+                  `relative font-heading text-sm font-semibold transition after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-left after:rounded-full after:bg-gold after:transition-transform ${
+                    isActive ? "brand-gold after:scale-x-100" : "brand-muted after:scale-x-0 hover:!text-white hover:after:scale-x-100"
+                  }`
+                }
+                key={item.href}
+                to={item.href}
+              >
+                {item.label}
+              </NavLink>
+            ),
+          )}
         </div>
         <Link className="gold-button hidden lg:inline-flex" to="/contact#contact-form">
           Contact Us
@@ -635,16 +996,41 @@ function Header() {
       {open && (
         <div className="animate-in border-t border-white/10 bg-navy px-5 pb-5 lg:hidden">
           <div className="flex flex-col gap-1 pt-2">
-            {navItems.map((item) => (
-              <NavLink
-                className="brand-muted rounded-md px-3 py-3 font-heading text-sm font-semibold transition hover:bg-white/10 hover:!text-white"
-                key={item.href}
-                onClick={() => setOpen(false)}
-                to={item.href}
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            {navItems.map((item) =>
+              item.href === "/services" ? (
+                <div key={item.href}>
+                  <NavLink
+                    className="brand-muted flex items-center justify-between rounded-md px-3 py-3 font-heading text-sm font-semibold transition hover:bg-white/10 hover:!text-white"
+                    onClick={() => setOpen(false)}
+                    to={item.href}
+                  >
+                    {item.label}
+                    <ChevronRight size={16} />
+                  </NavLink>
+                  <div className="ml-3 border-l border-gold/25 pl-3">
+                    {serviceMenuItems.map((service) => (
+                      <NavLink
+                        className="brand-subtle block rounded-md px-3 py-2.5 font-heading text-sm font-semibold transition hover:bg-white/10 hover:!text-white"
+                        key={service.path}
+                        onClick={() => setOpen(false)}
+                        to={service.path}
+                      >
+                        {service.title}
+                      </NavLink>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <NavLink
+                  className="brand-muted rounded-md px-3 py-3 font-heading text-sm font-semibold transition hover:bg-white/10 hover:!text-white"
+                  key={item.href}
+                  onClick={() => setOpen(false)}
+                  to={item.href}
+                >
+                  {item.label}
+                </NavLink>
+              ),
+            )}
             <Link className="gold-button mt-2 justify-center" onClick={() => setOpen(false)} to="/contact#contact-form">
               Contact Us
             </Link>
@@ -932,8 +1318,6 @@ function CTA({
 }
 
 function HomePage() {
-  const [activePhase, setActivePhase] = useState(0);
-
   return (
     <>
       <PageHero
@@ -954,8 +1338,8 @@ function HomePage() {
               <Link className="gold-button" to="/contact#contact-form">
                 Contact Us <ArrowRight size={18} />
               </Link>
-              <Link className="ghost-button" to="/elevate">
-                See How It Works
+              <Link className="ghost-button" to="/services">
+                Explore Services
               </Link>
             </div>
           </div>
@@ -972,62 +1356,17 @@ function HomePage() {
           body="Every service is customized, measured, and backed by our results-first operating philosophy."
         />
         <div className="mx-auto mt-12 grid max-w-7xl gap-5 lg:grid-cols-3">
-          {servicePillars.map(({ title, subtitle, icon: Icon, copy }, index) => (
+          {servicePillars.map(({ title, subtitle, icon: Icon, copy, path }, index) => (
             <Panel className={`animate-in p-7 stagger-${Math.min(index + 1, 3)}`} key={title}>
               <Icon className="brand-gold" size={32} />
               <p className="brand-gold mt-5 font-heading text-xs font-bold uppercase tracking-[0.24em]">{subtitle}</p>
               <h3 className="brand-white mt-3 font-heading text-2xl font-bold">{title}</h3>
               <p className="brand-muted mt-4 text-sm leading-6">{copy}</p>
-              <Link className="magnetic-link brand-gold mt-6 inline-flex items-center gap-2 font-heading text-sm font-bold" to="/services">
+              <Link className="magnetic-link brand-gold mt-6 inline-flex items-center gap-2 font-heading text-sm font-bold" to={path}>
                 Learn More <ChevronRight size={17} />
               </Link>
             </Panel>
           ))}
-        </div>
-      </section>
-      <section className="section-band brand-navy-alt px-5 py-20 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">
-              Our Proprietary Methodology
-            </p>
-            <h2 className="brand-white mt-4 font-heading text-4xl font-bold leading-tight">
-              The <Gold>ELEVATE™</Gold> Framework
-            </h2>
-            <p className="brand-muted mt-5 leading-7">
-              70% of coaching fails within 30 days. ELEVATE™ was engineered to be the 30%: a 7-phase transformation journey with a measurable results guarantee built in.
-            </p>
-            <div className="mt-7 rounded-lg border border-gold/30 p-5">
-              <p className="brand-white font-heading text-2xl font-bold">20% - 35%</p>
-              <p className="brand-muted mt-2 text-sm leading-6">
-                Improvement in pipeline conversion, deal size, and time-to-quota within 6 months for full-program clients.
-              </p>
-            </div>
-          </div>
-          <Panel className="animate-in stagger-2 p-6" strong>
-            <div className="grid grid-cols-7 gap-2">
-              {phases.map((phase, index) => (
-                <button
-                  className={`phase-letter ${activePhase === index ? "phase-letter-active" : ""}`}
-                  key={`${phase.name}-${index}`}
-                  onClick={() => setActivePhase(index)}
-                  type="button"
-                >
-                  {phase.letter}
-                </button>
-              ))}
-            </div>
-            <div className="mt-6">
-              <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.22em]">
-                {phases[activePhase].weeks}
-              </p>
-              <h3 className="brand-white mt-2 font-heading text-3xl font-bold">{phases[activePhase].name}</h3>
-              <p className="brand-muted mt-3 leading-7">{phases[activePhase].summary}</p>
-            </div>
-            <Link className="gold-button mt-7" to="/elevate">
-              Explore ELEVATE <ArrowRight size={18} />
-            </Link>
-          </Panel>
         </div>
       </section>
       <section className="section-band brand-navy px-5 py-20 lg:px-8">
@@ -1052,7 +1391,7 @@ function HomePage() {
         <div className="mx-auto mt-12 grid max-w-7xl gap-5 md:grid-cols-3">
           <IconStat icon={BriefcaseBusiness} title="Real-world credibility" copy="Our consultants have closed AED 25M+ enterprise deals themselves. We teach what we have lived." />
           <IconStat icon={Globe2} title="UAE-built for UAE" copy="Every program reflects UAE buyer culture, commercial dynamics, and regional execution realities." />
-          <IconStat icon={ShieldCheck} title="Results guaranteed" copy="ELEVATE™ engagements are tied to measurable outcome commitments, not certificates." />
+          <IconStat icon={ShieldCheck} title="Results-focused" copy="Engagements are designed around measurable commercial outcomes, not certificates." />
         </div>
         <Panel className="mx-auto mt-10 max-w-4xl p-8 text-center" strong>
           <Quote className="brand-gold mx-auto" size={34} />
@@ -1192,6 +1531,24 @@ function AboutPage() {
 function ServicesPage() {
   return (
     <>
+      <SEO
+        title="Business Consulting Services Dubai | Transcend Consultancy"
+        description="Explore Transcend Consultancy services: Performance Excellence, Organizational Development, and Corporate Events Management for UAE and GCC organizations."
+        path="/services"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Transcend Consultancy Services",
+          description: "Performance Excellence, Organizational Development, and Corporate Events Management services in Dubai.",
+          url: siteUrl("/services"),
+          mainEntity: serviceDetailPages.map((service) => ({
+            "@type": "Service",
+            name: service.title,
+            url: siteUrl(service.path),
+            description: service.description,
+          })),
+        }}
+      />
       <PageHero
         eyebrow="Our Services"
         title={
@@ -1202,6 +1559,46 @@ function ServicesPage() {
         body="Every engagement is customized to your industry, your team, and your commercial context, then measured against real business outcomes. Not attendance sheets."
         image={heroImages.services}
       />
+      <section className="section-band brand-navy-alt px-5 py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-5xl text-center">
+            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Service Map</p>
+            <h2 className="brand-white mt-5 font-heading text-5xl font-bold leading-[1.05] md:text-7xl">
+              Three ways to build momentum.
+            </h2>
+            <p className="brand-muted mx-auto mt-6 max-w-3xl text-xl font-semibold leading-8">
+              Choose the transformation track that matches the business moment: performance, alignment, or events.
+            </p>
+          </div>
+
+          <div className="mt-16 grid gap-6 lg:grid-cols-3">
+            {serviceDetailPages.map(({ title, eyebrow, description, icon: Icon, path, illustration }, index) => (
+              <Link className={`brand-panel interactive-card animate-in flex min-h-[620px] flex-col overflow-hidden rounded-[2rem] p-6 stagger-${Math.min(index + 1, 3)}`} key={title} to={path}>
+                <div className="relative -mx-2 overflow-hidden rounded-[1.5rem] bg-[#071C35] p-6">
+                  <img
+                    alt={`${title} diagram`}
+                    className="h-64 w-full object-contain"
+                    src={illustration}
+                  />
+                </div>
+                <div className="mt-7 flex items-start justify-between gap-5">
+                  <div>
+                    <p className="brand-gold font-heading text-xs font-bold uppercase tracking-[0.24em]">{eyebrow}</p>
+                    <h2 className="brand-white mt-3 font-heading text-3xl font-bold leading-tight">{title}</h2>
+                  </div>
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-gold/30 bg-gold/10">
+                    <Icon className="brand-gold" size={24} />
+                  </span>
+                </div>
+                <p className="brand-muted mt-5 text-sm font-semibold leading-7">{description}</p>
+                <span className="brand-gold mt-auto inline-flex items-center gap-2 pt-8 font-heading text-sm font-bold">
+                  Open Service Page <ChevronRight size={17} />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
       <section className="brand-navy px-5 py-20 lg:px-8" id="performance-excellence">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[.88fr_1.12fr] lg:items-end">
@@ -1224,6 +1621,9 @@ function ServicesPage() {
               </p>
               <Link className="gold-button mt-6" to="/contact#contact-form">
                 Get a Quote Now <ArrowRight size={18} />
+              </Link>
+              <Link className="ghost-button mt-3 w-full" to="/services/Performance Excellence">
+                View Service Page <ChevronRight size={18} />
               </Link>
             </Panel>
           </div>
@@ -1292,6 +1692,9 @@ function ServicesPage() {
             <Link className="gold-button mt-7" to="/contact#contact-form">
               Book a Workshop <ArrowRight size={18} />
             </Link>
+            <Link className="ghost-button mt-3" to="/services/Organizational Development">
+              View Service Page <ChevronRight size={18} />
+            </Link>
           </Panel>
 
           <Panel className="p-7">
@@ -1317,10 +1720,231 @@ function ServicesPage() {
             <Link className="gold-button mt-7" to="/contact#contact-form">
               Discuss Your Event <ArrowRight size={18} />
             </Link>
+            <Link className="ghost-button mt-3" to="/services/Corporate Events Management">
+              View Service Page <ChevronRight size={18} />
+            </Link>
           </Panel>
         </div>
       </section>
       <CTA title={<>Not sure where to start? <Gold>Diagnose the challenge first.</Gold></>} body="Tell us what is not working. We will recommend the right service, and if we are not the right fit, we will tell you that too." />
+    </>
+  );
+}
+
+function ServiceProductStage({ service }: { service: (typeof serviceDetailPages)[number] }) {
+  const Icon = service.icon;
+
+  return (
+    <div className="mx-auto max-w-7xl">
+      <div className="grid gap-12 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
+        <div className="lg:pb-20">
+          <div className="grid h-20 w-20 place-items-center rounded-2xl bg-gold text-white shadow-2xl shadow-gold/20">
+            <Icon size={38} />
+          </div>
+          <p className="brand-gold mt-8 font-heading text-sm font-bold uppercase tracking-[0.3em]">{service.eyebrow}</p>
+          <h2 className="brand-white mt-5 max-w-xl font-heading text-5xl font-bold leading-[1.05] md:text-7xl">
+            {service.visualHeadline}
+          </h2>
+          <p className="brand-muted mt-6 max-w-lg text-xl font-semibold leading-8">
+            {service.visualCopy}
+          </p>
+        </div>
+
+        <div className="relative min-h-[560px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 md:p-12">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_35%,rgba(201,149,42,0.18),transparent_34%)]" />
+          <img
+            alt={`${service.title} illustration`}
+            className="relative z-10 mx-auto h-full max-h-[480px] w-full object-contain drop-shadow-2xl"
+            src={service.illustration}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ServiceMetricBand({ metrics }: { metrics: Array<string[]> }) {
+  return (
+    <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2">
+      {metrics.map(([label, detail], index) => (
+        <div className="border-t border-white/28 pt-7" key={label}>
+          <p className="brand-subtle text-sm font-semibold">{label}</p>
+          <p className="brand-gold mt-3 font-heading text-4xl font-bold leading-tight md:text-6xl">
+            {index + 1 < 10 ? `0${index + 1}` : index + 1}
+          </p>
+          <p className="brand-white mt-3 max-w-md text-xl font-bold leading-8">{detail}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ServiceFeatureShowcase({ service }: { service: (typeof serviceDetailPages)[number] }) {
+  return (
+    <section className="brand-navy-alt px-5 py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Capabilities</p>
+          <h2 className="brand-white mt-5 font-heading text-5xl font-bold leading-[1.05] md:text-7xl">
+            {service.featureHeadline}
+          </h2>
+          <p className="brand-muted mx-auto mt-7 max-w-3xl text-xl font-semibold leading-8">
+            {service.featureCopy}
+          </p>
+        </div>
+
+        <div className="mt-16 grid gap-x-12 gap-y-14 md:grid-cols-2">
+          {service.sections.map((section, index) => (
+            <article className="border-t border-white/22 pt-7" key={section.title}>
+              <div className="grid gap-5 sm:grid-cols-[4.5rem_1fr]">
+                <span className="brand-gold font-heading text-5xl font-bold leading-none">0{index + 1}</span>
+                <div>
+                  <h3 className="brand-white font-heading text-3xl font-bold leading-tight md:text-4xl">{section.title}</h3>
+                  <p className="brand-subtle mt-3 text-lg font-semibold leading-7">{section.subtitle}</p>
+                </div>
+              </div>
+              <p className="brand-muted mt-6 max-w-2xl text-base font-semibold leading-8">{section.copy}</p>
+              <div className="mt-6 grid gap-3">
+                {section.bullets.slice(0, 4).map((bullet) => (
+                  <div className="flex items-start gap-3" key={bullet}>
+                    <CheckCircle2 className="brand-gold mt-1 shrink-0" size={18} />
+                    <p className="brand-white text-sm font-bold leading-6">{bullet}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServiceFlowStage({ process }: { process: string[] }) {
+  return (
+    <section className="section-band brand-navy px-5 py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+          <h2 className="brand-white font-heading text-5xl font-bold leading-[1.05] md:text-7xl">
+            From clarity to execution.
+          </h2>
+          <p className="brand-muted max-w-2xl text-xl font-semibold leading-8">
+            Four moves. No clutter. Diagnose, design, build, embed.
+          </p>
+        </div>
+
+        <div className="mt-16 grid gap-8 md:grid-cols-4">
+          {process.map((step, index) => (
+            <div className="relative min-h-56 border-t border-white/24 pt-7" key={step}>
+              <span className="brand-gold font-heading text-5xl font-bold">0{index + 1}</span>
+              <p className="brand-white mt-6 font-heading text-2xl font-bold leading-tight">{step}</p>
+              {index < process.length - 1 && (
+                <div className="absolute right-6 top-12 hidden h-px w-20 bg-gold/50 md:block" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServiceDetailPage() {
+  const { serviceName } = useParams();
+  const normalizedName = decodeURIComponent(serviceName ?? "").replace(/-/g, " ").toLowerCase();
+  const service =
+    serviceDetailPages.find((item) => item.slug.toLowerCase() === normalizedName) ??
+    serviceDetailPages.find((item) => item.slug.toLowerCase().replace(/\s+/g, "-") === (serviceName ?? "").toLowerCase()) ??
+    serviceDetailPages[0];
+  const Icon = service.icon;
+
+  return (
+    <>
+      <SEO
+        title={`${service.title} Dubai | Transcend Consultancy`}
+        description={service.description}
+        path={service.path}
+        image={service.image}
+        jsonLd={serviceJsonLd(service)}
+      />
+      <PageHero
+        eyebrow={service.eyebrow}
+        title={
+          <>
+            {service.title} for <Gold>measurable transformation.</Gold>
+          </>
+        }
+        body={service.hero}
+        image={service.image}
+        cta={
+          <div className="flex flex-wrap gap-4">
+            <Link className="gold-button" to="/contact#contact-form">
+              Start a Conversation <ArrowRight size={18} />
+            </Link>
+            <Link className="ghost-button" to="/services">
+              All Services
+            </Link>
+          </div>
+        }
+      />
+
+      <section className="section-band brand-navy px-5 py-24 lg:px-8">
+        <ServiceProductStage service={service} />
+      </section>
+
+      <section className="brand-navy-alt px-5 py-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[.98fr_1.02fr] lg:items-center">
+          <div>
+            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Impact</p>
+            <h2 className="brand-white mt-5 max-w-3xl font-heading text-5xl font-bold leading-[1.05] md:text-7xl">
+              {service.impactHeadline}
+            </h2>
+            <div className="mt-12">
+            <ServiceMetricBand metrics={service.metrics} />
+            </div>
+          </div>
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.045] p-8 md:p-12">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_30%,rgba(201,149,42,0.16),transparent_34%)]" />
+            <img
+              alt={`${service.title} insight diagram`}
+              className="relative z-10 mx-auto h-[420px] w-full object-contain"
+              src={service.secondaryIllustration}
+            />
+          </div>
+        </div>
+      </section>
+
+      <ServiceFeatureShowcase service={service} />
+
+      <ServiceFlowStage process={service.process} />
+
+      <section className="brand-navy-alt px-5 py-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">Questions</p>
+            <h2 className="brand-white mt-5 font-heading text-5xl font-bold leading-[1.05] md:text-6xl">
+              Clear answers. No pitch.
+            </h2>
+          </div>
+          <div className="grid gap-3">
+          {service.faq.map(([question, answer]) => (
+            <details className="border-t border-white/18 py-5" key={question}>
+              <summary className="brand-white cursor-pointer font-heading text-xl font-bold">{question}</summary>
+              <p className="brand-muted mt-3 text-sm leading-7">{answer}</p>
+            </details>
+          ))}
+          </div>
+        </div>
+      </section>
+
+      <CTA
+        title={
+          <>
+            Build your <Gold>{service.title}</Gold> engagement.
+          </>
+        }
+        body="Share the business challenge, target audience, and desired outcome. We will recommend the right scope and next step."
+      />
     </>
   );
 }
@@ -2583,8 +3207,8 @@ function ContactPage() {
         <div className="mx-auto mt-12 grid max-w-7xl gap-5 md:grid-cols-2">
           {[
             ["Do you work with small teams?", "Yes. Programs scale from teams of 5 to national salesforces of 500+."],
-            ["How quickly can you start?", "Standalone workshops can be deployed within 2-3 weeks. Full ELEVATE™ programs are scoped during discovery."],
-            ["What does the results guarantee mean?", "For ELEVATE™ engagements, measurable targets are defined upfront, tracked, and reported throughout."],
+            ["How quickly can you start?", "Standalone workshops can be deployed within 2-3 weeks. Larger transformation programs are scoped during discovery."],
+            ["How do you measure results?", "Measurable targets are defined upfront, tracked during delivery, and reviewed with leadership."],
             ["Do you work outside the UAE?", "Our primary focus is UAE and MEA, with select GCC and South-East Asia engagements case by case."],
           ].map(([question, answer]) => (
             <Panel className="p-6" key={question}>
@@ -2813,7 +3437,8 @@ export function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
-          <Route path="/elevate" element={<ElevatePage />} />
+          <Route path="/services/:serviceName" element={<ServiceDetailPage />} />
+          <Route path="/elevate" element={<Navigate replace to="/" />} />
           <Route path="/verticals" element={<VerticalsPage />} />
           <Route path="/industries" element={<VerticalsPage />} />
           <Route path="/insights" element={<InsightsPage />} />
