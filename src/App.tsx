@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { CSSProperties, FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -602,15 +602,15 @@ function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy shadow-lg shadow-navy/15">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy/95 shadow-lg shadow-navy/15 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         <Logo />
         <div className="hidden items-center gap-8 lg:flex">
           {navItems.map((item) => (
             <NavLink
               className={({ isActive }) =>
-                `font-heading text-sm font-semibold transition ${
-                  isActive ? "brand-gold" : "brand-muted hover:!text-white"
+                `relative font-heading text-sm font-semibold transition after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-left after:rounded-full after:bg-gold after:transition-transform ${
+                  isActive ? "brand-gold after:scale-x-100" : "brand-muted after:scale-x-0 hover:!text-white hover:after:scale-x-100"
                 }`
               }
               key={item.href}
@@ -633,11 +633,11 @@ function Header() {
         </button>
       </nav>
       {open && (
-        <div className="border-t border-white/10 bg-navy px-5 pb-5 lg:hidden">
-          <div className="flex flex-col gap-1">
+        <div className="animate-in border-t border-white/10 bg-navy px-5 pb-5 lg:hidden">
+          <div className="flex flex-col gap-1 pt-2">
             {navItems.map((item) => (
               <NavLink
-                className="brand-muted rounded-md px-3 py-3 font-heading text-sm font-semibold hover:bg-white/10 hover:!text-white"
+                className="brand-muted rounded-md px-3 py-3 font-heading text-sm font-semibold transition hover:bg-white/10 hover:!text-white"
                 key={item.href}
                 onClick={() => setOpen(false)}
                 to={item.href}
@@ -670,20 +670,19 @@ function PageHero({
 }) {
   return (
     <section
-      className="relative overflow-hidden bg-navy"
+      className="hero-shell relative overflow-hidden bg-navy"
       style={{
-        backgroundImage: `linear-gradient(90deg, rgba(26, 60, 110, .92), rgba(26, 60, 110, .76)), url(${image})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-      }}
+        "--hero-image": `url(${image})`,
+      } as CSSProperties}
     >
+      <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 hidden h-px w-[min(80rem,calc(100%-2.5rem))] -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent md:block" />
       <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-5 py-20 lg:px-8">
-        <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.32em]">{eyebrow}</p>
-        <h1 className="brand-white mt-5 max-w-5xl font-heading text-4xl font-bold leading-tight md:text-6xl">
+        <p className="brand-gold animate-in font-heading text-sm font-bold uppercase tracking-[0.32em]">{eyebrow}</p>
+        <h1 className="brand-white animate-in stagger-1 mt-5 max-w-5xl font-heading text-4xl font-bold leading-tight md:text-6xl">
           {title}
         </h1>
-        <p className="brand-muted mt-6 max-w-3xl text-lg leading-8">{body}</p>
-        {cta && <div className="mt-8">{cta}</div>}
+        <p className="brand-muted animate-in stagger-2 mt-6 max-w-3xl text-lg leading-8">{body}</p>
+        {cta && <div className="animate-in stagger-3 mt-8">{cta}</div>}
       </div>
     </section>
   );
@@ -691,7 +690,7 @@ function PageHero({
 
 function SectionHeader({ eyebrow, title, body }: { eyebrow: string; title: ReactNode; body?: string }) {
   return (
-    <div className="mx-auto max-w-4xl text-center">
+    <div className="animate-in mx-auto max-w-4xl text-center">
       <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">{eyebrow}</p>
       <h2 className="brand-white mt-4 font-heading text-3xl font-bold leading-tight md:text-5xl">{title}</h2>
       {body && <p className="brand-muted mt-5 text-base leading-7 md:text-lg">{body}</p>}
@@ -710,14 +709,14 @@ function Panel({
   id?: string;
   strong?: boolean;
 }) {
-  return <div className={`${strong ? "brand-panel-strong" : "brand-panel"} rounded-lg ${className}`} id={id}>{children}</div>;
+  return <div className={`${strong ? "brand-panel-strong" : "brand-panel"} group interactive-card rounded-lg ${className}`} id={id}>{children}</div>;
 }
 
 function BulletList({ items }: { items: string[] }) {
   return (
     <ul className="mt-5 space-y-3">
-      {items.map((item) => (
-        <li className="brand-muted flex gap-3 text-sm leading-6" key={item}>
+      {items.map((item, index) => (
+        <li className={`brand-muted animate-in flex gap-3 text-sm leading-6 stagger-${Math.min(index + 1, 4)}`} key={item}>
           <CheckCircle2 className="brand-gold mt-0.5 shrink-0" size={18} />
           <span>{item}</span>
         </li>
@@ -729,7 +728,7 @@ function BulletList({ items }: { items: string[] }) {
 function IconStat({ icon: Icon, title, copy }: { icon: LucideIcon; title: string; copy: string }) {
   return (
     <Panel className="p-6">
-      <Icon className="brand-gold" size={28} />
+      <Icon className="brand-gold transition-transform duration-200 group-hover:scale-110" size={28} />
       <h3 className="brand-white mt-4 font-heading text-xl font-bold">{title}</h3>
       <p className="brand-muted mt-3 text-sm leading-6">{copy}</p>
     </Panel>
@@ -962,7 +961,7 @@ function HomePage() {
           </div>
         }
       />
-      <section className="brand-navy px-5 py-20 lg:px-8">
+      <section className="section-band brand-navy px-5 py-20 lg:px-8">
         <SectionHeader
           eyebrow="What We Do"
           title={
@@ -973,20 +972,20 @@ function HomePage() {
           body="Every service is customized, measured, and backed by our results-first operating philosophy."
         />
         <div className="mx-auto mt-12 grid max-w-7xl gap-5 lg:grid-cols-3">
-          {servicePillars.map(({ title, subtitle, icon: Icon, copy }) => (
-            <Panel className="p-7" key={title}>
+          {servicePillars.map(({ title, subtitle, icon: Icon, copy }, index) => (
+            <Panel className={`animate-in p-7 stagger-${Math.min(index + 1, 3)}`} key={title}>
               <Icon className="brand-gold" size={32} />
               <p className="brand-gold mt-5 font-heading text-xs font-bold uppercase tracking-[0.24em]">{subtitle}</p>
               <h3 className="brand-white mt-3 font-heading text-2xl font-bold">{title}</h3>
               <p className="brand-muted mt-4 text-sm leading-6">{copy}</p>
-              <Link className="brand-gold mt-6 inline-flex items-center gap-2 font-heading text-sm font-bold" to="/services">
+              <Link className="magnetic-link brand-gold mt-6 inline-flex items-center gap-2 font-heading text-sm font-bold" to="/services">
                 Learn More <ChevronRight size={17} />
               </Link>
             </Panel>
           ))}
         </div>
       </section>
-      <section className="brand-navy-alt px-5 py-20 lg:px-8">
+      <section className="section-band brand-navy-alt px-5 py-20 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
           <div>
             <p className="brand-gold font-heading text-sm font-bold uppercase tracking-[0.3em]">
@@ -1005,7 +1004,7 @@ function HomePage() {
               </p>
             </div>
           </div>
-          <Panel className="p-6" strong>
+          <Panel className="animate-in stagger-2 p-6" strong>
             <div className="grid grid-cols-7 gap-2">
               {phases.map((phase, index) => (
                 <button
@@ -1031,7 +1030,7 @@ function HomePage() {
           </Panel>
         </div>
       </section>
-      <section className="brand-navy px-5 py-20 lg:px-8">
+      <section className="section-band brand-navy px-5 py-20 lg:px-8">
         <SectionHeader
           eyebrow="Built For UAE's High Performing Sectors"
           title={
@@ -1048,7 +1047,7 @@ function HomePage() {
           ))}
         </div>
       </section>
-      <section className="brand-navy-alt px-5 py-20 lg:px-8">
+      <section className="section-band brand-navy-alt px-5 py-20 lg:px-8">
         <SectionHeader eyebrow="Why Organizations Choose Us" title={<>The Transcend <Gold>Difference</Gold></>} />
         <div className="mx-auto mt-12 grid max-w-7xl gap-5 md:grid-cols-3">
           <IconStat icon={BriefcaseBusiness} title="Real-world credibility" copy="Our consultants have closed AED 25M+ enterprise deals themselves. We teach what we have lived." />

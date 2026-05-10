@@ -28,7 +28,7 @@ export function DataTable<T>({
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left">
-          <thead className="sticky top-0 bg-slate-50/90">
+          <thead className="sticky top-0 bg-slate-50/95 backdrop-blur">
             <tr>
               {columns.map((column) => (
                 <th
@@ -42,7 +42,7 @@ export function DataTable<T>({
           </thead>
           <tbody>
             {rows.map((row, rowIndex) => (
-              <tr key={rowIndex} className="border-t border-slate-100">
+              <tr key={rowIndex} className="border-t border-slate-100 transition duration-150 hover:bg-amber-50/45">
                 {columns.map((column) => (
                   <td key={String(column.key)} className="px-5 py-4 align-top text-sm text-slate-700">
                     {column.render(row)}

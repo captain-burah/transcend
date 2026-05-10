@@ -21,12 +21,12 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
         <p className="mt-1 text-sm text-slate-500">Lead routing, portal sync, deals, and signing events</p>
       </div>
       <div className="space-y-4">
-        {items.map((item) => {
+        {items.map((item, index) => {
           const Icon = categoryIcon[item.category];
 
           return (
-            <div key={item.id} className="flex gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
+            <div key={item.id} className={`group animate-in flex gap-3 rounded-2xl p-2 transition duration-150 hover:bg-slate-50 stagger-${Math.min(index + 1, 4)}`}>
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 transition group-hover:bg-amber-100 group-hover:text-amber-700">
                 <Icon className="h-4 w-4" />
               </div>
               <div>

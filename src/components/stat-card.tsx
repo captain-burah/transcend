@@ -8,7 +8,7 @@ export function StatCard({ label, value, delta, trend, description }: KPI) {
 
   return (
     <Card className="relative overflow-hidden">
-      <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-amber-100/70 blur-3xl" />
+      <div className="pulse-dot absolute right-0 top-0 h-24 w-24 rounded-full bg-amber-100/70 blur-3xl" />
       <p className="text-sm font-medium text-slate-500">{label}</p>
       <div className="mt-4 flex items-end justify-between gap-3">
         <div>
